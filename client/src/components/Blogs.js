@@ -4,8 +4,11 @@ import { Grid, Card, CardHeader, CardContent, CardActions, Button, Fab, makeStyl
 import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
+    bottom:{
+        marginBottom: theme.spacing(6)
+    },
     fab: {
-        position: 'absolute',
+        position: 'fixed',
         bottom: theme.spacing(10),
         right: theme.spacing(2),
       },
@@ -16,10 +19,10 @@ function Blogs() {
     const { blogs, dispatch } = useContext(BlogContext)
 
     return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} className={classes.bottom}>
         {blogs.map(blog => (
             <Grid item key={blog.date}>
-            <Card variant='outlined'>
+            <Card variant='outlined' className={classes.card}>
                 <CardHeader title={blog.title} subheader={blog.date}/>
                 <CardContent>{blog.description}</CardContent>
                 <CardActions>

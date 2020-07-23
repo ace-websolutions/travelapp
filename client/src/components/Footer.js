@@ -19,7 +19,7 @@ function Footer() {
     const classes = useStyles();
 
     return (
-        <AppBar className={classes.bottom}position="fixed">
+        <AppBar className={classes.bottom} position='fixed'>
             <Toolbar className={classes.actions}>
             <IconButton><FacebookIcon /></IconButton>
             <IconButton><InstagramIcon /></IconButton>

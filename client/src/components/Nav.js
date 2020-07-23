@@ -1,17 +1,18 @@
 import React, {useState, useContext} from 'react'
 import {BlogContext} from '../context/BlogContext'
 import {PAGES} from '../context/AppReducer'
-import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles} from '@material-ui/core'
+import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles, Switch} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ExploreIcon from '@material-ui/icons/Explore';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 
 const useStyles = makeStyles((theme) => ({
+    switch:{
+        marginLeft: 'auto'
+    },
     list:{
-        width: '20vw',
-        maxWidth: 360,
-        minWidth: 'auto',
+        width: 150,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-function Nav() {
+function Nav({dark, setDark}) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const {setPage} = useContext(BlogContext)
@@ -66,6 +67,7 @@ function Nav() {
                     </List>
                 </Drawer>
                 <Typography variant='h4'>Travel Blog</Typography>
+                <Switch className={classes.switch}checked={dark} onChange={() => setDark(!dark)}/>
             </Toolbar>
         </AppBar>
     )
