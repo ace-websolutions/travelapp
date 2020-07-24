@@ -1,9 +1,26 @@
-import React, {useContext} from 'react'
-import {BlogContext} from '../context/BlogContext'
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Slider, makeStyles, Fab } from '@material-ui/core'
+import React, {useContext, useState} from 'react'
+import {AppContext} from '../context/AppContext'
+import {ACTIONS} from '../context/AppReducer'
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Slider, makeStyles, Fab,
+    Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, ButtonGroup } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
+    buttonHover:{
+        position: 'relative',
+        '&hover > ButtonGroup':{
+            opacity:1
+        }
+    },
+    buttons:{
+        position: 'absolute',
+        left: -50,
+        top: -50,
+        //opacity: 0
+    },
+    textField:{
+        margin: theme.spacing(1),
+    },
     topRow:{
         backgroundColor: theme.palette.primary.light
     },
@@ -13,13 +30,67 @@ const useStyles = makeStyles((theme) => ({
         right: theme.spacing(2),
       },
 }))
-
-
+const emptyPlace = {
+    location:"",
+    date:"",
+    timeSpent:"",
+    rating: 50
+}
 function Places() {
     const classes = useStyles();
-    const {places, dispatchPlaces} = useContext(BlogContext);
+    const {places, dispatchPlaces} = useContext(AppContext);
+    const [add, setAdd] = useState(false);
+    const [newPlace, setNewPlace] = useState(emptyPlace)
+    const [editing, setEditing] = useState(false)
+    const [placeIndex, setPlaceIndex] = useState(0)
+
+    const openNewPlace = () => {
+        setAdd(true);
+    }
+    const closeNewPlace = () => {
+        setNewPlace(emptyPlace);
+        setEditing(false);
+        setPlaceIndex(0);
+        setAdd(false);
+    }
+    const handleLocation= (e) => {
+        setNewPlace({...newPlace, location: e.target.value})
+    }
+    const handleDate= (e) => {
+        setNewPlace({...newPlace, date: e.target.value})
+    }
+    const handleTimeSpent= (e) => {
+        setNewPlace({...newPlace, timeSpent: e.target.value})
+    }
+    const handleRating= (event, value) => {
+        setNewPlace({...newPlace, rating: value})
+        console.log(value)
+    }
+    const addPlace = () => {
+        if(editing){
+            dispatchPlaces({type: ACTIONS.EDIT_PLACE, payload: {id: placeIndex, blog:newPlace}})
+        }else{
+            dispatchPlaces({type: ACTIONS.ADD_PLACE, payload: newPlace })
+        }
+        console.log(newPlace)
+        console.log(places)
+        setNewPlace(emptyPlace);
+        setEditing(false);
+        setPlaceIndex(0);
+        setAdd(false);
+    }
+    const editPlace = (blog, index) => {
+        setAdd(true);
+        setNewPlace(blog)
+        setEditing(true);
+        setPlaceIndex(index);
+    }
+    const deletePlace = (id) =>{
+         dispatchPlaces({type: ACTIONS.DELETE_PLACE, payload: id})
+    }
 
     return (
+        <>
         <TableContainer component={Paper}>
             <Table size='small'>
                 <TableHead>
@@ -30,23 +101,41 @@ function Places() {
                         <TableCell>Rating</TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody >
                     {places.map(place => (
+                        <>
                         <TableRow key={place.date}>
                             <TableCell>{place.location}</TableCell>
                             <TableCell>{place.date}</TableCell>
                             <TableCell>{place.timeSpent}</TableCell>
-                            <TableCell><Slider defaultValue={place.rating}   valueLabelDisplay="auto"
+                            <TableCell><Slider value={place.rating}   valueLabelDisplay="auto"
                             /></TableCell>
                         </TableRow>
+                        </>
                     ))}
 
                 </TableBody>
             </Table>
-            <Fab className={classes.fab} color="secondary" aria-label="add">
+            <Fab className={classes.fab} onClick={openNewPlace} color="secondary" aria-label="add">
         <AddIcon />
       </Fab>
         </TableContainer>
+        <Dialog open={add} onClose={closeNewPlace}>
+         <DialogTitle id="form-dialog-title">Add a New Blog</DialogTitle>
+         <DialogContent>
+             <TextField className={classes.textField} variant="outlined" label="Location" type='text' value={newPlace.location} onChange={handleLocation}/>
+             <TextField className={classes.textField} variant="outlined" label="Date" type='date' value={newPlace.date} onChange={handleDate} InputLabelProps={{
+      shrink: true,
+    }}/>
+             <TextField className={classes.textField} variant="outlined" label="Time Spent" type='text' value={newPlace.timeSpent} onChange={handleTimeSpent} />
+                    <Slider  onChange={handleRating} valueLabelDisplay="auto" />
+         </DialogContent>
+         <DialogActions>
+             <Button variant='contained' onClick={closeNewPlace}>Close</Button>
+             <Button variant='contained' color="secondary" onClick={addPlace}>{editing ? 'Save' : 'Add'}</Button>
+         </DialogActions>
+     </Dialog>
+        </>
     )
 }
 

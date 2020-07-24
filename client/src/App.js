@@ -1,21 +1,26 @@
 import React, {useState} from 'react';
+import AppProvider, {AppContext} from './context/AppContext'
 import Nav from './components/Nav'
 import Body from './components/Body'
 import Footer from './components/Footer'
-import BlogProvider from './context/BlogContext'
 import {Grid, Paper } from '@material-ui/core'
-import { createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, makeStyles} from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
-import grey from '@material-ui/core/colors/grey';
+import pink from '@material-ui/core/colors/pink';
 
 function App() {
+  const [primary, setPrimary] = useState(blue)
+  const [secondary, setSecondary] = useState(pink)
   const [dark, setDark] = useState(false)
+
   const themeCustom= createMuiTheme({
     palette:{
-      primary: dark ? grey : blue,
+      primary: primary,
+      secondary: secondary,
       type: dark ? 'dark': 'light'
     }
   })
+
   const useStyles = makeStyles((theme) => ({
     paper:{
       minHeight: '100vh',
@@ -31,10 +36,10 @@ function App() {
   const classes = useStyles();
   
   return (
+    <AppProvider>
     <ThemeProvider theme={themeCustom}>
-      <BlogProvider>
        <Paper className={classes.paper}>
-       <Nav dark={dark} setDark={setDark}/>
+       <Nav dark={dark} setDark={setDark} primary={primary} setPrimary={setPrimary} secondary={secondary} setSecondary={setSecondary}/>
         <Grid container className={classes.body}>
           <Grid item xs={1} sm={2} />
           <Grid container item xs={10} sm={8}>
@@ -44,8 +49,8 @@ function App() {
         </Grid>
        <Footer />
         </Paper>
-      </BlogProvider>
-    </ThemeProvider>
+        </ThemeProvider>
+    </AppProvider>
   );
 }
 

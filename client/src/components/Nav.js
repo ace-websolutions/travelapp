@@ -1,11 +1,18 @@
 import React, {useState, useContext} from 'react'
-import {BlogContext} from '../context/BlogContext'
+import {AppContext} from '../context/AppContext'
 import {PAGES} from '../context/AppReducer'
-import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles, Switch} from '@material-ui/core'
+import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles, Switch, Dialog, DialogTitle, Divider, MenuItem, Select} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ExploreIcon from '@material-ui/icons/Explore';
-import FastfoodIcon from '@material-ui/icons/Fastfood';
+import FreeBreakfastIcon from '@material-ui/icons/FreeBreakfast';
+import SettingsIcon from '@material-ui/icons/Settings';
+import blue from '@material-ui/core/colors/blue';
+import pink from '@material-ui/core/colors/pink';
+import purple from '@material-ui/core/colors/purple';
+import green from '@material-ui/core/colors/green';
+import orange from '@material-ui/core/colors/orange';
+
 
 const useStyles = makeStyles((theme) => ({
     switch:{
@@ -18,13 +25,18 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         justifyContent: 'space-evenly',
         backgroundColor: theme.palette.primary.light
+    },
+    menu:{
+        minWidth: 300,
+        // minHeight: 300
     }
 }))
 
-function Nav({dark, setDark}) {
+function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const {setPage} = useContext(BlogContext)
+    const [openSettings, setOpenSettings] = useState(false);
+    const {setPage} = useContext(AppContext)
 
     const openBlog = () => {
         setPage(PAGES.BLOG)
@@ -37,6 +49,21 @@ function Nav({dark, setDark}) {
     const openFood = () => {
         setPage(PAGES.FOOD)
         setOpen(false)
+    }
+    const openSettingsMenu = () => {
+        setOpenSettings(true);
+        console.log(openSettings)
+        // state is ALWAYS false
+    }
+    const handleClose = () => {
+        setOpenSettings(false)
+        console.log(openSettings)
+    }
+    const changePrimary = (event) => {
+        setPrimary(event.target.value)
+    }
+    const changeSecondary = (event) => {
+        setSecondary(event.target.value)
     }
     return (
         <AppBar position='static'>
@@ -52,25 +79,62 @@ function Nav({dark, setDark}) {
                             </ListItemIcon>
                             <ListItemText primary='Blogs' />
                             </ListItem>
+                            <Divider />
                         <ListItem button onClick={openPlaces}>
                             <ListItemIcon>
                                     <ExploreIcon />
                             </ListItemIcon>
                             <ListItemText primary='Places' /> 
                             </ListItem>
+                            <Divider />
                         <ListItem button onClick={openFood}>
                             <ListItemIcon>
-                                    <FastfoodIcon />
+                                    <FreeBreakfastIcon />
                             </ListItemIcon>
-                            <ListItemText primary='Food' />
+                            <ListItemText primary='Food and Drink' />
                             </ListItem>
+                            <Divider />
+                        <ListItem button onClick={openSettingsMenu}>
+                            <ListItemIcon>
+                                <SettingsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Settings"/>
+                            <Dialog className={classes.menu} open={openSettings} onClose={() => setOpenSettings(false)}>
+                                <DialogTitle>Settings</DialogTitle>
+                                <List>
+                                    <ListItem>
+                                        <ListItemText primary="Dark Mode" />
+                                        <Switch className={classes.switch}checked={dark} onChange={handleClose}/> 
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary="Primary Color" />
+                                        <Select value={primary} onChange={changePrimary}>
+                                            <MenuItem value={blue}>Blue</MenuItem>
+                                            <MenuItem value={green}>Green</MenuItem>
+                                            <MenuItem value={orange}>Orange</MenuItem>
+                                            <MenuItem value={pink}>Pink</MenuItem>
+                                            <MenuItem value={purple}>Purple</MenuItem>
+                                        </Select>
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary="Secondary Color" />
+                                        <Select value={secondary} onChange={changeSecondary}>
+                                            <MenuItem value={blue}>Blue</MenuItem>
+                                            <MenuItem value={green}>Green</MenuItem>
+                                            <MenuItem value={orange}>Orange</MenuItem>
+                                            <MenuItem value={pink}>Pink</MenuItem>
+                                            <MenuItem value={purple}>Purple</MenuItem>
+                                        </Select>
+                                    </ListItem>
+                                </List>
+                            </Dialog>
+                        </ListItem>
                     </List>
                 </Drawer>
                 <Typography variant='h4'>Travel Blog</Typography>
-                <Switch className={classes.switch}checked={dark} onChange={() => setDark(!dark)}/>
             </Toolbar>
         </AppBar>
+
     )
 }
-
 export default Nav

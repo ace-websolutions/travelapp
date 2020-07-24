@@ -1,12 +1,12 @@
 import React, { useContext} from 'react'
-import {BlogContext} from '../context/BlogContext'
+import {AppContext} from '../context/AppContext'
 import Blogs from './Blogs'
 import Places from './Places'
 import Food from './Food'
 import { PAGES } from '../context/AppReducer'
 
 function Body() {
-    const {page} = useContext(BlogContext)
+    const {page} = useContext(AppContext)
 
     switch(page) {
         case PAGES.BLOG:

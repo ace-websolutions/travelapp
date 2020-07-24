@@ -4,9 +4,9 @@ import './index.css';
 import App from './App';
 
 ReactDOM.render(
-  <React.Fragment>
+<React.Fragment>
     <App />
-  </React.Fragment>,
+    </React.Fragment>,
   document.getElementById('root')
 );
 
