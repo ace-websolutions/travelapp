@@ -2,8 +2,10 @@ import React, {useContext, useState} from 'react'
 import {AppContext} from '../context/AppContext'
 import {ACTIONS} from '../context/AppReducer'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Slider, makeStyles, Fab,
-    Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, ButtonGroup } from '@material-ui/core'
+    Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Backdrop, Snackbar  } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     buttonHover:{
@@ -29,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(10),
         right: theme.spacing(2),
       },
+      backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      },
 }))
 const emptyPlace = {
     location:"",
@@ -38,7 +44,7 @@ const emptyPlace = {
 }
 function Places() {
     const classes = useStyles();
-    const {places, dispatchPlaces} = useContext(AppContext);
+    const {places, dispatchPlaces, loading, setLoading, snack, setSnack, snackMessage, page} = useContext(AppContext);
     const [add, setAdd] = useState(false);
     const [newPlace, setNewPlace] = useState(emptyPlace)
     const [editing, setEditing] = useState(false)
@@ -67,6 +73,8 @@ function Places() {
         console.log(value)
     }
     const addPlace = () => {
+        setLoading(true);
+        setTimeout(() => setLoading(false), 2000)
         if(editing){
             dispatchPlaces({type: ACTIONS.EDIT_PLACE, payload: {id: placeIndex, blog:newPlace}})
         }else{
@@ -78,6 +86,7 @@ function Places() {
         setEditing(false);
         setPlaceIndex(0);
         setAdd(false);
+        setSnack(true)
     }
     const editPlace = (blog, index) => {
         setAdd(true);
@@ -91,6 +100,9 @@ function Places() {
 
     return (
         <>
+                <Snackbar open={snack} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage(page)}</Alert></Snackbar>
+        <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
+
         <TableContainer component={Paper}>
             <Table size='small'>
                 <TableHead>

@@ -2,8 +2,10 @@ import React, {useContext, useState} from 'react'
 import {AppContext} from '../context/AppContext'
 import {ACTIONS} from '../context/AppReducer'
 import { Grid, Card, CardHeader, CardContent, CardActions, Button, Fab, makeStyles,
-Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@material-ui/core'
+Dialog, DialogTitle, DialogContent, TextField, DialogActions, Backdrop, Snackbar } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     textField:{
@@ -17,6 +19,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(10),
         right: theme.spacing(2),
       },
+      backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      },
 }))
 const emptyBlog = {
     title:"",
@@ -26,7 +32,7 @@ const emptyBlog = {
 
 function Blogs() {
     const classes = useStyles();
-    const { blogs, dispatchBlogs } = useContext(AppContext)
+    const { blogs, dispatchBlogs, loading, setLoading, snack, setSnack, snackMessage, page } = useContext(AppContext)
     const [add, setAdd] = useState(false);
     const [newBlog, setNewBlog] = useState(emptyBlog)
     const [editing, setEditing] = useState(false)
@@ -51,6 +57,8 @@ function Blogs() {
         setNewBlog({...newBlog, description: e.target.value})
     }
     const addBlog = () => {
+        setLoading(true);
+        setTimeout(() => setLoading(false), 2000)
         if(editing){
             dispatchBlogs({type: ACTIONS.EDIT_BLOG, payload: {id: blogIndex, blog:newBlog}})
         }else{
@@ -60,6 +68,7 @@ function Blogs() {
         setEditing(false);
         setBlogIndex(0);
         setAdd(false);
+        setSnack(true);
     }
     const editBlog = (blog, index) => {
         setAdd(true);
@@ -74,6 +83,8 @@ function Blogs() {
 
     return (
         <>
+        <Snackbar open={snack} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage(page)}</Alert></Snackbar>
+        <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
     <Grid container spacing={2} className={classes.bottom}>
         {blogs.map(blog => (
             <Grid item key={blog.date}>

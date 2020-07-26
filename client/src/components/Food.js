@@ -2,8 +2,10 @@ import React, {useContext, useState} from 'react'
 import {AppContext} from '../context/AppContext'
 import {ACTIONS} from '../context/AppReducer'
 import {makeStyles, GridList, GridListTile, GridListTileBar, Fab, Container,
-    Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button} from '@material-ui/core'
+    Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Backdrop, Snackbar } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     textField:{
@@ -21,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(10),
         right: theme.spacing(2),
       },
+      backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      },
 }))
 const emptyFood = {
     image:"",
@@ -29,7 +35,7 @@ const emptyFood = {
 }
 function Food() {
     const classes = useStyles();
-    const {foods, dispatchFoods} = useContext(AppContext);
+    const {foods, dispatchFoods, loading, setLoading, snack, setSnack, snackMessage, page} = useContext(AppContext);
     const [add, setAdd] = useState(false);
     const [newFood, setNewFood] = useState(emptyFood)
     const [editing, setEditing] = useState(false)
@@ -54,6 +60,9 @@ function Food() {
         setNewFood({...newFood, place: e.target.value})
     }
     const addFood = () => {
+        setLoading(true);
+        setTimeout(() => setLoading(false), 2000)
+
         if(editing){
             dispatchFoods({type: ACTIONS.EDIT_FOOD, payload: {id: foodIndex, food:newFood}})
         }else{
@@ -63,6 +72,7 @@ function Food() {
         setEditing(false);
         setFoodIndex(0);
         setAdd(false);
+        setSnack(true)
     }
     const editFood = (food, index) => {
         setAdd(true);
@@ -77,6 +87,9 @@ function Food() {
 
     return (
         <Container>
+                    <Snackbar open={snack} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage(page)}</Alert></Snackbar>
+        <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
+
         <GridList cellHeight={180} className={classes.root}>
             {foods.map((food) => (
                 <GridListTile key={food.name}>

@@ -15,20 +15,37 @@ import orange from '@material-ui/core/colors/orange';
 
 
 const useStyles = makeStyles((theme) => ({
+    toolBar:{
+        justifyContent: 'center',
+        alignItems: 'center',
+        position:'relative'
+    },
+    title:{
+        paddingTop: theme.spacing(1),
+        color: theme.palette.text.primary
+    },
+    menuIcon:{
+        position: 'absolute',
+        top: theme.spacing(1),
+        left: theme.spacing(2),
+    },
     switch:{
         marginLeft: 'auto'
     },
     list:{
-        width: 150,
+        minWidth: 225,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-evenly',
+        justifyContent: 'flex-start',
         backgroundColor: theme.palette.primary.light
     },
     menu:{
-        minWidth: 300,
+        overflow:'hidden',
         // minHeight: 300
+    },
+    settings:{
+        marginTop:'auto'
     }
 }))
 
@@ -55,7 +72,7 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
         console.log(openSettings)
         // state is ALWAYS false
     }
-    const handleClose = () => {
+    const closeSettingsMenu = () => {
         setOpenSettings(false)
         console.log(openSettings)
     }
@@ -67,8 +84,8 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
     }
     return (
         <AppBar position='static'>
-            <Toolbar>
-                <IconButton edge='start' onClick={() => setOpen(true)}>
+            <Toolbar className={classes.toolBar}>
+                <IconButton className={classes.menuIcon} onClick={() => setOpen(true)}>
                     <MenuIcon />
                 </IconButton>
                 <Drawer anchor='left' open={open} onClose={() => setOpen(false)}>
@@ -79,59 +96,57 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
                             </ListItemIcon>
                             <ListItemText primary='Blogs' />
                             </ListItem>
-                            <Divider />
                         <ListItem button onClick={openPlaces}>
                             <ListItemIcon>
                                     <ExploreIcon />
                             </ListItemIcon>
                             <ListItemText primary='Places' /> 
                             </ListItem>
-                            <Divider />
                         <ListItem button onClick={openFood}>
                             <ListItemIcon>
                                     <FreeBreakfastIcon />
                             </ListItemIcon>
                             <ListItemText primary='Food and Drink' />
                             </ListItem>
-                            <Divider />
-                        <ListItem button onClick={openSettingsMenu}>
+                        <ListItem button onClick={openSettingsMenu} className={classes.settings}>
                             <ListItemIcon>
                                 <SettingsIcon />
                             </ListItemIcon>
                             <ListItemText primary="Settings"/>
-                            <Dialog className={classes.menu} open={openSettings} onClose={() => setOpenSettings(false)}>
-                                <DialogTitle>Settings</DialogTitle>
-                                <List>
-                                    <ListItem>
-                                        <ListItemText primary="Dark Mode" />
-                                        <Switch className={classes.switch}checked={dark} onChange={handleClose}/> 
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText primary="Primary Color" />
-                                        <Select value={primary} onChange={changePrimary}>
-                                            <MenuItem value={blue}>Blue</MenuItem>
-                                            <MenuItem value={green}>Green</MenuItem>
-                                            <MenuItem value={orange}>Orange</MenuItem>
-                                            <MenuItem value={pink}>Pink</MenuItem>
-                                            <MenuItem value={purple}>Purple</MenuItem>
-                                        </Select>
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText primary="Secondary Color" />
-                                        <Select value={secondary} onChange={changeSecondary}>
-                                            <MenuItem value={blue}>Blue</MenuItem>
-                                            <MenuItem value={green}>Green</MenuItem>
-                                            <MenuItem value={orange}>Orange</MenuItem>
-                                            <MenuItem value={pink}>Pink</MenuItem>
-                                            <MenuItem value={purple}>Purple</MenuItem>
-                                        </Select>
-                                    </ListItem>
-                                </List>
-                            </Dialog>
                         </ListItem>
                     </List>
                 </Drawer>
-                <Typography variant='h4'>Travel Blog</Typography>
+                <Typography variant='h4' className={classes.title}>Travel Blog</Typography>
+                <Dialog className={classes.menu} open={openSettings} onClose={closeSettingsMenu} fullWidth maxWidth='sm'>
+                    <DialogTitle>Settings</DialogTitle>
+                    <Divider />
+                    <List className={classes.menu}>
+                        <ListItem>
+                            <ListItemText primary="Dark Mode" />
+                            <Switch className={classes.switch}checked={dark} onChange={() => setDark(!dark)}/> 
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="Primary Color" />
+                            <Select value={primary} onChange={changePrimary}>
+                                <MenuItem value={blue}>Blue</MenuItem>
+                                <MenuItem value={green}>Green</MenuItem>
+                                <MenuItem value={orange}>Orange</MenuItem>
+                                <MenuItem value={pink}>Pink</MenuItem>
+                                <MenuItem value={purple}>Purple</MenuItem>
+                            </Select>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="Accent Color" />
+                            <Select value={secondary} onChange={changeSecondary}>
+                                <MenuItem value={blue}>Blue</MenuItem>
+                                <MenuItem value={green}>Green</MenuItem>
+                                <MenuItem value={orange}>Orange</MenuItem>
+                                <MenuItem value={pink}>Pink</MenuItem>
+                                <MenuItem value={purple}>Purple</MenuItem>
+                            </Select>
+                        </ListItem>
+                    </List>
+                </Dialog>
             </Toolbar>
         </AppBar>
 
