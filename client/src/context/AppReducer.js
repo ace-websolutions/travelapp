@@ -1,4 +1,7 @@
 export const ACTIONS = {
+    GET_BLOG:'get-blog',
+    GET_PLACE:'get-place',
+    GET_FOOD:'get-food',
     ADD_BLOG:'add-blog',
     ADD_PLACE:'add-place',
     ADD_FOOD:'add-food',
@@ -17,56 +20,77 @@ export const PAGES = {
 
 export const BlogReducer = (blogs, action) => {
     switch (action.type) {
+        case ACTIONS.GET_BLOG:
+            return {...blogs, blogs:action.payload}
         case ACTIONS.ADD_BLOG:
-            return [action.payload, ...blogs];
+            return {...blogs, blogs:[action.payload, ...blogs.blogs]};
         case ACTIONS.EDIT_BLOG:
-            const newBlogs = [...blogs];
-            newBlogs[action.payload.id] = action.payload.blog
+            const newBlogs = {...blogs, blogs:[...blogs.blogs]};
+            newBlogs.blogs[action.payload.index] = action.payload.blog
             return newBlogs
         case ACTIONS.DELETE_BLOG:
-            return blogs.filter(blog => blog.title !== action.payload)
+            return {...blogs, blogs:blogs.blogs.filter(blog => blog._id !== action.payload)}
         default:
             return blogs;
     }
 }
 export const PlaceReducer = (places, action) => {
     switch (action.type) {
+        case ACTIONS.GET_PLACE:
+            return {...places, places:action.payload}
         case ACTIONS.ADD_PLACE:
-            return [action.payload, ...places];
+            return {...places, places:[action.payload, ...places.places]};
         case ACTIONS.EDIT_PLACE:
-            const newPlaces = [...places];
-            newPlaces[action.payload.id] = action.payload.place
+            const newPlaces = {...places, places:[...places.places]};
+            newPlaces.places[action.payload.index] = action.payload.place
             return newPlaces
         case ACTIONS.DELETE_PLACE:
-            return places.filter(place => place.location !== action.payload)
+            return {...places, places:places.places.filter(place => place._id !== action.payload)}
         default:
             return places;
     }
 }
 export const FoodReducer = (foods, action) => {
     switch (action.type) {
+        case ACTIONS.GET_FOOD:
+            return {...foods, foods:action.payload}
         case ACTIONS.ADD_FOOD:
-            return [action.payload, ...foods];
+            return {...foods, foods:[action.payload, ...foods.foods]};
         case ACTIONS.EDIT_FOOD:
-            const newFoods = [...foods];
-            newFoods[action.payload.id] = action.payload.food
-            return newFoods
+            const newPlace = {...foods, foods:[...foods.foods]};
+            newPlace.foods[action.payload.index] = action.payload.food
+            return newPlace
         case ACTIONS.DELETE_FOOD:
-            return foods.filter(food => food.name !== action.payload)
+            return {...foods, foods:foods.foods.filter(food => food._id !== action.payload)}
         default:
             return foods;
     }
 }
 
+export const INITIAL_BLOGS = {
+    blogs: [],
+    error: null
+}
+export const INITIAL_PLACES = {
+    places: [],
+    error: null
+
+}
+export const INITIAL_FOODS = {
+    foods: [],
+    error: null
+
+}
+
 export const TEST_BLOGS = [
     {
         title: "Toured the colosseum ", 
-        date: "9/21/2020",
+        date: "2020-09-21",
         description:"History was crazy, so many people died, rich people ran it, poor people gambled",
     },
     {
         title: "River Boat Ride",
-        date:"9/26/2020",
+        date:"2020-09-26",
         description:"Relaxing, saw some really cool houses, I even got to paddle a little!"
     },
     

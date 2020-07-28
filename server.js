@@ -1,6 +1,7 @@
 const express = require('express')
 const connectDB = require('./config/db')
 const dotenv = require('dotenv')
+const cors = require('cors')
 const path = require('path')
 
 dotenv.config();
@@ -12,6 +13,7 @@ const foods = require("./routes/foods");
 
 const app = express();
 
+app.use(cors())
 app.use(express.json());
 
 app.use('/api/v1', blogs)

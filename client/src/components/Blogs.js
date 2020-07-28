@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import {AppContext} from '../context/AppContext'
 import {ACTIONS} from '../context/AppReducer'
 import { Grid, Card, CardHeader, CardContent, CardActions, Button, Fab, makeStyles,
@@ -32,11 +32,21 @@ const emptyBlog = {
 
 function Blogs() {
     const classes = useStyles();
-    const { blogs, dispatchBlogs, loading, setLoading, snack, setSnack, snackMessage, page } = useContext(AppContext)
+    const { blogs, dispatchBlogs, loading, setLoading, snack, setSnack, snackMessage, page,
+    getBlogs, editBlog, deleteBlog, addBlog } = useContext(AppContext)
     const [add, setAdd] = useState(false);
     const [newBlog, setNewBlog] = useState(emptyBlog)
     const [editing, setEditing] = useState(false)
     const [blogIndex, setBlogIndex] = useState(0)
+
+    useEffect( () =>{
+        loadPage();
+    }, [])
+
+    const loadPage = async () => {
+        await getBlogs();
+        setLoading(false)
+    }
     
     const openNewBlog = () => {
         setAdd(true);
@@ -56,13 +66,11 @@ function Blogs() {
     const handleDescription= (e) => {
         setNewBlog({...newBlog, description: e.target.value})
     }
-    const addBlog = () => {
-        setLoading(true);
-        setTimeout(() => setLoading(false), 2000)
+    const submitBlog = () => {
         if(editing){
-            dispatchBlogs({type: ACTIONS.EDIT_BLOG, payload: {id: blogIndex, blog:newBlog}})
+            editBlog(newBlog._id, blogIndex, newBlog)
         }else{
-            dispatchBlogs({type: ACTIONS.ADD_BLOG, payload: newBlog })
+            addBlog(newBlog)
         }
         setNewBlog(emptyBlog);
         setEditing(false);
@@ -70,38 +78,35 @@ function Blogs() {
         setAdd(false);
         setSnack(true);
     }
-    const editBlog = (blog, index) => {
+    const setupEditBlog = (blog, index) => {
         setAdd(true);
-        setNewBlog({title: blog.title,
+        setNewBlog({_id: blog._id, title: blog.title,
         date: blog.date, description:blog.description})
         setEditing(true);
         setBlogIndex(index);
-    }
-    const deleteBlog = (id) =>{
-         dispatchBlogs({type: ACTIONS.DELETE_BLOG, payload: id})
     }
 
     return (
         <>
         <Snackbar open={snack} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage(page)}</Alert></Snackbar>
         <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
-    <Grid container spacing={2} className={classes.bottom}>
-        {blogs.map(blog => (
-            <Grid item key={blog.date}>
+    <Grid container direction='row-reverse' spacing={2} className={classes.bottom}>
+        {blogs.blogs.map(blog => (
+            <Grid item key={blog._id}>
             <Card variant='outlined' className={classes.card}>
                 <CardHeader title={blog.title} subheader={blog.date}/>
                 <CardContent>{blog.description}</CardContent>
                 <CardActions>
-                <Button variant='contained' onClick={() => editBlog(blog, blogs.indexOf(blog))}>Edit</Button>
-                <Button variant='contained' onClick={() => deleteBlog(blog.title)}>Delete</Button>
+                <Button variant='contained' onClick={() => setupEditBlog(blog, blogs.blogs.indexOf(blog))}>Edit</Button>
+                <Button variant='contained' onClick={() => deleteBlog(blog._id)}>Delete</Button>
                 </CardActions>
             </Card>
         </Grid>
         ))}            
+     </Grid>
         <Fab className={classes.fab} onClick={openNewBlog} color="secondary" aria-label="add">
         <AddIcon />
       </Fab>
-     </Grid>
      <Dialog open={add} onClose={closeNewBlog}>
          <DialogTitle id="form-dialog-title">Add a New Blog</DialogTitle>
          <DialogContent>
@@ -113,7 +118,7 @@ function Blogs() {
          </DialogContent>
          <DialogActions>
              <Button variant='contained' onClick={closeNewBlog}>Close</Button>
-             <Button variant='contained' color="secondary"onClick={addBlog}>{editing ? 'Save' : 'Add'}</Button>
+             <Button variant='contained' color="secondary"onClick={submitBlog}>{editing ? 'Save' : 'Add'}</Button>
          </DialogActions>
      </Dialog>
                 </>
