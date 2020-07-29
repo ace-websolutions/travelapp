@@ -23,7 +23,7 @@ export const BlogReducer = (blogs, action) => {
         case ACTIONS.GET_BLOG:
             return {...blogs, blogs:action.payload}
         case ACTIONS.ADD_BLOG:
-            return {...blogs, blogs:[action.payload, ...blogs.blogs]};
+            return {...blogs, blogs:[ ...blogs.blogs, action.payload]};
         case ACTIONS.EDIT_BLOG:
             const newBlogs = {...blogs, blogs:[...blogs.blogs]};
             newBlogs.blogs[action.payload.index] = action.payload.blog
@@ -57,9 +57,9 @@ export const FoodReducer = (foods, action) => {
         case ACTIONS.ADD_FOOD:
             return {...foods, foods:[action.payload, ...foods.foods]};
         case ACTIONS.EDIT_FOOD:
-            const newPlace = {...foods, foods:[...foods.foods]};
-            newPlace.foods[action.payload.index] = action.payload.food
-            return newPlace
+            const newFood = {...foods, foods:[...foods.foods]};
+            newFood.foods[action.payload.index] = action.payload.food
+            return newFood
         case ACTIONS.DELETE_FOOD:
             return {...foods, foods:foods.foods.filter(food => food._id !== action.payload)}
         default:
@@ -99,13 +99,13 @@ export const TEST_BLOGS = [
 export const TEST_PLACES = [
     {
         location:"Rome",
-        date:"9/21/2020",
+        date:"2020-09-21",
         timeSpent:"2 Days",
         rating: 85
     },
     {
         location:"Greece",
-        date:"9/26/2020",
+        date:"2020-09-26",
         timeSpent:"1 Days",
         rating: 65
     },

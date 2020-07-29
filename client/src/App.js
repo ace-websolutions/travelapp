@@ -5,6 +5,8 @@ import Body from './components/Body'
 import Footer from './components/Footer'
 import {Grid, Paper } from '@material-ui/core'
 import { createMuiTheme, ThemeProvider, makeStyles} from '@material-ui/core/styles';
+import MomentUtils from '@date-io/moment';
+import { MuiPickersUtilsProvider} from '@material-ui/pickers';
 import blue from '@material-ui/core/colors/blue';
 import pink from '@material-ui/core/colors/pink';
 
@@ -37,9 +39,11 @@ function App() {
   
   return (
     <AppProvider>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
     <ThemeProvider theme={themeCustom}>
        <Paper className={classes.paper}>
-       <Nav dark={dark} setDark={setDark} primary={primary} setPrimary={setPrimary} secondary={secondary} setSecondary={setSecondary}/>
+       <Nav dark={dark} setDark={setDark} primary={primary} setPrimary={setPrimary}
+        secondary={secondary} setSecondary={setSecondary}/>
         <Grid container className={classes.body}>
           <Grid item xs={1} sm={2} />
           <Grid container item xs={10} sm={8}>
@@ -50,6 +54,7 @@ function App() {
        <Footer />
         </Paper>
         </ThemeProvider>
+        </MuiPickersUtilsProvider>
     </AppProvider>
   );
 }

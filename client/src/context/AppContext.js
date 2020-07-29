@@ -9,15 +9,40 @@ function AppProvider({ children }) {
    const [blogs, dispatchBlogs] = useReducer(BlogReducer, INITIAL_BLOGS)
    const [places, dispatchPlaces] = useReducer(PlaceReducer, INITIAL_PLACES)
    const [foods, dispatchFoods] = useReducer(FoodReducer, INITIAL_FOODS)
-   const [page, setPage] = useState(PAGES.BLOG)
+   const [homePage, setHomePage] = useState(PAGES.BLOG)
+   const [page, setPage] = useState(homePage)
    const [loading, setLoading] = useState(true)
    const [snack, setSnack] = useState(false)
+   const [snackMessage, setSnackMessage] = useState('')
 
-   const snackMessage = (currentPage) => {
-       if(currentPage === PAGES.BLOG) return "Blog added!"
-       if(currentPage === PAGES.PLACES) return "Location added!"
-       if(currentPage === PAGES.FOOD) return "Post added!"
-       console.log(currentPage)
+   const snackMessageController = (currentPage, action) => {
+       if(currentPage === PAGES.BLOG){
+           if(action === "add"){
+               return "Blog added!"
+           }else if(action === "edit"){
+               return "Blog saved!"
+           }else if(action === "delete"){
+               return "Blog deleted!"
+           }
+       } 
+       if(currentPage === PAGES.PLACES) {
+            if(action === "add"){
+                return "Location added!"
+            }else if(action === "edit"){
+                return "Location saved!"
+            }else if(action === "delete"){
+                return "Location deleted!"
+            }
+    }
+       if(currentPage === PAGES.FOOD) {
+        if(action === "add"){
+            return "Post added!"
+        }else if(action === "edit"){
+            return "Post saved!"
+        }else if(action === "delete"){
+            return "Post deleted!"
+        }
+    }
    }
    const getBlogs = async () => {
        try{
@@ -149,9 +174,10 @@ const editFood = async (id, index, food) => {
 
     return (
         <AppContext.Provider value={{blogs, dispatchBlogs, places, dispatchPlaces, page, setPage, 
-        foods, dispatchFoods, loading, setLoading, snack, setSnack, snackMessage,
+        foods, dispatchFoods, loading, setLoading, snack, setSnack, snackMessageController,
         getBlogs, addBlog, deleteBlog, editBlog,
-        getPlaces, addPlace, deletePlace, editPlace,}}> 
+        getPlaces, addPlace, deletePlace, editPlace,
+        getFoods, addFood, deleteFood, editFood, snackMessage, setSnackMessage, homePage, setHomePage}}> 
             {children}
         </AppContext.Provider>
     )

@@ -1,24 +1,25 @@
-import React, {useContext, useState} from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import {AppContext} from '../context/AppContext'
 import {ACTIONS} from '../context/AppReducer'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Slider, makeStyles, Fab,
-    Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Backdrop, Snackbar  } from '@material-ui/core'
+    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Button, ButtonGroup,IconButton, Backdrop, Snackbar, Menu, MenuItem, ListItemIcon  } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import EditIcon from '@material-ui/icons/Edit';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
-    buttonHover:{
-        position: 'relative',
-        '&hover > ButtonGroup':{
-            opacity:1
-        }
+    editLabel:{
+        textAlign: 'right'
     },
-    buttons:{
-        position: 'absolute',
-        left: -50,
-        top: -50,
-        //opacity: 0
+    editButtons:{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    editButton:{
+        marginRight: theme.spacing(1)
     },
     textField:{
         margin: theme.spacing(1),
@@ -44,14 +45,40 @@ const emptyPlace = {
 }
 function Places() {
     const classes = useStyles();
-    const {places, dispatchPlaces, loading, setLoading, snack, setSnack, snackMessage, page} = useContext(AppContext);
+    const {places, dispatchPlaces, loading, setLoading, snack, setSnack, snackMessageController, page,
+        getPlaces, editPlace, deletePlace, addPlace, snackMessage, setSnackMessage} = useContext(AppContext);
     const [add, setAdd] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [prompt, setPrompt] = useState(false);
+    const [promptTitle, setPromptTitle] = useState("");
+    const [promptId, setPromptId] = useState('');
     const [newPlace, setNewPlace] = useState(emptyPlace)
     const [editing, setEditing] = useState(false)
     const [placeIndex, setPlaceIndex] = useState(0)
+    const [openMenu, setOpenMenu] = useState(false)
+    const [anchorEl, setAnchorEl] = useState(null)
+
+    useEffect( () =>{
+        loadPage();
+    }, [])
+
+    const loadPage = async () => {
+        setLoading(true);
+        await getPlaces();
+        setLoading(false)
+    }
 
     const openNewPlace = () => {
         setAdd(true);
+        setOpenMenu(false)
+    }
+    const openEditPlace = () => {
+        setEdit(true)
+        setOpenMenu(false)
+    }
+    const closeEdit = () => {
+        setEdit(false)
+        setOpenMenu(false)
     }
     const closeNewPlace = () => {
         setNewPlace(emptyPlace);
@@ -72,35 +99,44 @@ function Places() {
         setNewPlace({...newPlace, rating: value})
         console.log(value)
     }
-    const addPlace = () => {
-        setLoading(true);
-        setTimeout(() => setLoading(false), 2000)
+    const submitPlace = async () => {
         if(editing){
-            dispatchPlaces({type: ACTIONS.EDIT_PLACE, payload: {id: placeIndex, blog:newPlace}})
+            await editPlace(newPlace._id, placeIndex, newPlace)
+            setSnackMessage(snackMessageController(page, 'edit'))
+            setSnack(true)
+            setEdit(false)
         }else{
-            dispatchPlaces({type: ACTIONS.ADD_PLACE, payload: newPlace })
+            await addPlace(newPlace)
+            setSnackMessage(snackMessageController(page, 'add'))
+            setSnack(true)
         }
-        console.log(newPlace)
-        console.log(places)
         setNewPlace(emptyPlace);
         setEditing(false);
         setPlaceIndex(0);
         setAdd(false);
         setSnack(true)
     }
-    const editPlace = (blog, index) => {
+    const setupEditPlace = (place, index) => {
         setAdd(true);
-        setNewPlace(blog)
+        setNewPlace(place)
         setEditing(true);
         setPlaceIndex(index);
     }
-    const deletePlace = (id) =>{
-         dispatchPlaces({type: ACTIONS.DELETE_PLACE, payload: id})
-    }
+    const handlePromptShow = (title, id) => {
+        setPrompt(true);
+        setPromptTitle(title);
+        setPromptId(id);
+      };
+    
+      const handlePromptClose = () => {
+        setPrompt(false);
+        setPromptTitle('');
+        setPromptId('');
+      };
 
     return (
         <>
-                <Snackbar open={snack} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage(page)}</Alert></Snackbar>
+                <Snackbar open={snack} anchorOrigin={{vertical:'top', horizontal:'center'}} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage}</Alert></Snackbar>
         <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
 
         <TableContainer component={Paper}>
@@ -111,26 +147,46 @@ function Places() {
                         <TableCell>Date</TableCell>
                         <TableCell>Time Spent</TableCell>
                         <TableCell>Rating</TableCell>
+                        {edit ? (<TableCell className={classes.editLabel}>Edit</TableCell>) : null}
                     </TableRow>
                 </TableHead>
-                <TableBody >
-                    {places.map(place => (
+                <TableBody>
+                    {places.places.map(place => (
                         <>
-                        <TableRow key={place.date}>
+                        <TableRow key={place._id}>
                             <TableCell>{place.location}</TableCell>
                             <TableCell>{place.date}</TableCell>
                             <TableCell>{place.timeSpent}</TableCell>
                             <TableCell><Slider value={place.rating}   valueLabelDisplay="auto"
                             /></TableCell>
+                            {edit ? (<TableCell className={classes.editButtons}><Button className={classes.editButton} color='primary' variant="outlined" onClick={() => setupEditPlace(place, places.places.indexOf(place))}>Edit</Button>
+                            <Button color='secondary' variant="outlined" onClick={() => handlePromptShow(place.location, place._id)}>Delete</Button></TableCell>) : null}
                         </TableRow>
                         </>
                     ))}
 
                 </TableBody>
             </Table>
-            <Fab className={classes.fab} onClick={openNewPlace} color="secondary" aria-label="add">
-        <AddIcon />
+            <Fab className={classes.fab} onClick={(event) => {
+                setOpenMenu(true)
+                setAnchorEl(event.currentTarget)
+            }} color="secondary" aria-label="add">
+        <MoreHorizIcon />
       </Fab>
+      <Menu open={openMenu} onClose={() => setOpenMenu(false)} anchorEl={anchorEl}>
+      <MenuItem onClick={edit ? closeEdit : openEditPlace}>
+              <ListItemIcon>
+                  <EditIcon />
+              </ListItemIcon>
+        {edit ? 'Close Edit': 'Edit'}
+          </MenuItem>
+          <MenuItem onClick={openNewPlace}>
+              <ListItemIcon>
+                  <AddIcon />
+              </ListItemIcon>
+          Add
+          </MenuItem>
+      </Menu>
         </TableContainer>
         <Dialog open={add} onClose={closeNewPlace}>
          <DialogTitle id="form-dialog-title">Add a New Blog</DialogTitle>
@@ -144,9 +200,30 @@ function Places() {
          </DialogContent>
          <DialogActions>
              <Button variant='contained' onClick={closeNewPlace}>Close</Button>
-             <Button variant='contained' color="secondary" onClick={addPlace}>{editing ? 'Save' : 'Add'}</Button>
+             <Button variant='contained' color="secondary" onClick={submitPlace}>{editing ? 'Save' : 'Add'}</Button>
          </DialogActions>
      </Dialog>
+     <Dialog open={prompt} onClose={handlePromptClose}>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {`Are you sure you want to delete
+              ${promptTitle}?`}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="outlined" onClick={handlePromptClose}>No</Button>
+              <Button color="primary" variant="outlined" onClick={() => {
+                  deletePlace(promptId)
+                  handlePromptClose();
+                  setSnackMessage(snackMessageController(page, "delete"))
+                  setSnack(true)
+                  setEdit(false)
+                }}>
+                Yes
+              </Button>
+            </DialogActions>
+          </Dialog>
+
         </>
     )
 }
