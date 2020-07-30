@@ -1,12 +1,10 @@
 import React, {useState} from 'react';
-import AppProvider, {AppContext} from './context/AppContext'
+import AppProvider from './context/AppContext'
 import Nav from './components/Nav'
 import Body from './components/Body'
 import Footer from './components/Footer'
 import {Grid, Paper } from '@material-ui/core'
 import { createMuiTheme, ThemeProvider, makeStyles} from '@material-ui/core/styles';
-import MomentUtils from '@date-io/moment';
-import { MuiPickersUtilsProvider} from '@material-ui/pickers';
 import blue from '@material-ui/core/colors/blue';
 import pink from '@material-ui/core/colors/pink';
 
@@ -22,7 +20,6 @@ function App() {
       type: dark ? 'dark': 'light'
     }
   })
-
   const useStyles = makeStyles((theme) => ({
     paper:{
       minHeight: '100vh',
@@ -39,7 +36,6 @@ function App() {
   
   return (
     <AppProvider>
-      <MuiPickersUtilsProvider utils={MomentUtils}>
     <ThemeProvider theme={themeCustom}>
        <Paper className={classes.paper}>
        <Nav dark={dark} setDark={setDark} primary={primary} setPrimary={setPrimary}
@@ -54,7 +50,6 @@ function App() {
        <Footer />
         </Paper>
         </ThemeProvider>
-        </MuiPickersUtilsProvider>
     </AppProvider>
   );
 }

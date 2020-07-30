@@ -1,18 +1,18 @@
 import React, {useContext, useState, useEffect} from 'react'
 import {AppContext} from '../context/AppContext'
-import {ACTIONS} from '../context/AppReducer'
 import { Grid, Card, CardHeader, CardContent, CardActions, Button, Fab, makeStyles,
 Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Backdrop, Snackbar,
-IconButton, Menu, MenuItem, ListItemIcon  } from '@material-ui/core'
-import {DatePicker} from '@material-ui/pickers';
+Menu, MenuItem, ListItemIcon  } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
+    date: {
+        backgroundColor: "#fff"
+    },
     card: {
         maxWidth: 'auto'
     },
@@ -35,13 +35,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 const emptyBlog = {
     title:"",
-    date: new Date(),
+    date: "",
     description:""
 }
 
 function Blogs() {
     const classes = useStyles();
-    const { blogs, dispatchBlogs, loading, setLoading, snack, setSnack, snackMessageController, page,
+    const { blogs, loading, setLoading, snack, setSnack, snackMessageController, page,
     getBlogs, editBlog, deleteBlog, addBlog, snackMessage, setSnackMessage } = useContext(AppContext)
     const [add, setAdd] = useState(false);
     const [edit, setEdit] = useState(false);
@@ -54,7 +54,6 @@ function Blogs() {
     const [openMenu, setOpenMenu] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
 
-
     useEffect( () =>{
         loadPage();
     }, [])
@@ -64,7 +63,6 @@ function Blogs() {
         await getBlogs();
         setLoading(false)
     }
-    
     const openNewBlog = () => {
         setAdd(true);
         setOpenMenu(false)
@@ -86,12 +84,8 @@ function Blogs() {
     const handleTitle= (e) => {
         setNewBlog({...newBlog, title: e.target.value})
     }
-    const handleDate= (date) => {
-    //    let y = date.getFullYear();S
-    //    let m = date.getMonth();
-    //    let d = date.getDate();
-         setNewBlog({...newBlog, date:date._d })
-    console.log(date._d)
+    const handleDate= (e) => {
+         setNewBlog({...newBlog, date: e.target.value})
     }
     const handleDescription= (e) => {
         setNewBlog({...newBlog, description: e.target.value})
@@ -133,25 +127,25 @@ function Blogs() {
       };
     return (
         <>
-        <Snackbar open={snack} anchorOrigin={{vertical:'top', horizontal:'center'}} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage}</Alert></Snackbar>
-        <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
-    <Grid container direction='column-reverse' spacing={2} className={classes.bottom}>
-        {blogs.blogs.map(blog => (
-            <Grid item key={blog._id}>
-            <Card variant='outlined' className={classes.card}>
-                <CardHeader title={blog.title} subheader={blog.date}/>
-                <CardContent>{blog.description}</CardContent>
-                {edit ? (
-                    <CardActions>
-                    <Button color='primary' variant="outlined" onClick={() => setupEditBlog(blog, blogs.blogs.indexOf(blog))}>Edit</Button>
-                    <Button  color='secondary' variant="outlined" onClick={() => handlePromptShow(blog.title, blog._id)}>Delete</Button>
-                    </CardActions>
-                ) : null}
+            <Snackbar open={snack} anchorOrigin={{vertical:'top', horizontal:'center'}} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage}</Alert></Snackbar>
+            <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
+            <Grid container direction='column-reverse' spacing={2} className={classes.bottom}>
+                {blogs.blogs.map(blog => (
+                    <Grid item key={blog._id}>
+                    <Card variant='outlined' className={classes.card}>
+                        <CardHeader title={blog.title} subheader={blog.date}/>
+                        <CardContent>{blog.description}</CardContent>
+                        {edit ? (
+                            <CardActions>
+                            <Button color='primary' variant="outlined" onClick={() => setupEditBlog(blog, blogs.blogs.indexOf(blog))}>Edit</Button>
+                            <Button  color='secondary' variant="outlined" onClick={() => handlePromptShow(blog.title, blog._id)}>Delete</Button>
+                            </CardActions>
+                        ) : null}
 
-            </Card>
-        </Grid>
-        ))}           
-     </Grid>
+                    </Card>
+                 </Grid>
+               ))}           
+            </Grid>
      <Fab className={classes.fab} onClick={(event) => {
                 setOpenMenu(true)
                 setAnchorEl(event.currentTarget)
@@ -176,7 +170,9 @@ function Blogs() {
          <DialogTitle id="form-dialog-title">Add a New Blog</DialogTitle>
          <DialogContent>
              <TextField className={classes.textField} variant="outlined" label="Title" type='text' value={newBlog.title} onChange={handleTitle}/>
-             <DatePicker className={classes.textField} variant="inline" format="MM/DD/YYYY" label="Date" value={newBlog.date} onChange={handleDate} />
+             <TextField className={classes.textField} variant="outlined" label="Date" type="date" value={newBlog.date} onChange={handleDate} InputLabelProps={{
+              shrink: true,
+            }}/>
              <TextField className={classes.textField} variant="outlined" label="Description" type='text' value={newBlog.description} onChange={handleDescription} multiline fullWidth/>
          </DialogContent>
          <DialogActions>
