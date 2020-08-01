@@ -55,7 +55,7 @@ function Blogs() {
     const [anchorEl, setAnchorEl] = useState(null)
 
     useEffect( () =>{
-        loadPage();
+        //loadPage();
     }, [])
 
     const loadPage = async () => {

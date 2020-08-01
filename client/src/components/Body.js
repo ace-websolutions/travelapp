@@ -1,31 +1,25 @@
 import React, { useContext} from 'react'
+import {Route, Switch} from 'react-router-dom'
 import {AppContext} from '../context/AppContext'
+import Register from './Register'
+import Login from './Login'
 import Blogs from './Blogs'
 import Places from './Places'
 import Food from './Food'
-import { PAGES } from '../context/AppReducer'
 
 function Body() {
-    const {page} = useContext(AppContext)
+    const {homePage} = useContext(AppContext)
 
-    switch(page) {
-        case PAGES.BLOG:
-            return (
-                <Blogs />
-            )
-        case PAGES.PLACES:
-            return (
-                <Places />
-            )
-        case PAGES.FOOD:
-            return (
-                <Food />
-            )
-        default:
-            return(
-                <Places />
-            )
-    }
+    return(
+        <Switch>
+            <Route path="/" exact component={Blogs} />
+            <Route path="/register" component={Register} />
+            <Route path="/login" component={Login} />
+            <Route path="/blogs" component={Blogs} />
+            <Route path="/places" component={Places} />
+            <Route path="/foods" component={Food} />
+        </Switch>
+    )
 }
 
 export default Body

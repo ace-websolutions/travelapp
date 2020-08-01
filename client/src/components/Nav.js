@@ -1,7 +1,8 @@
 import React, {useState, useContext} from 'react'
+import {useHistory} from 'react-router-dom'
 import {AppContext} from '../context/AppContext'
 import {PAGES} from '../context/AppReducer'
-import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles, Switch, Dialog, DialogTitle, Divider, MenuItem, Select} from '@material-ui/core'
+import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles, Switch, Dialog, DialogTitle, Divider, MenuItem, Select, ButtonGroup, Button} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ExploreIcon from '@material-ui/icons/Explore';
@@ -52,18 +53,13 @@ const colors = [
 
 const useStyles = makeStyles((theme) => ({
     toolBar:{
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         position:'relative'
     },
     title:{
         paddingTop: theme.spacing(1),
         color: theme.palette.text.primary
-    },
-    menuIcon:{
-        position: 'absolute',
-        top: theme.spacing(1),
-        left: theme.spacing(2),
     },
     switch:{
         marginLeft: 'auto'
@@ -89,25 +85,37 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [openSettings, setOpenSettings] = useState(false);
-    const {page, setPage, homePage, setHomePage} = useContext(AppContext)
+    const {homePage, setHomePage, userData, setUserData} = useContext(AppContext)
+    const history = useHistory();
 
+    const register = () => {
+        history.push("/register");
+    }
+    const login = () => {
+        history.push("/login");
+    }
+    const logout = () => {
+        setUserData({
+            token:undefined,
+            user: undefined
+        })
+        localStorage.setItem("auth-token", "")
+        history.push("/login");
+    }
     const openBlog = () => {
-        setPage(PAGES.BLOG)
+        history.push("/blogs");
         setOpen(false)
     }
     const openPlaces = () => {
-        setPage(PAGES.PLACES)
+        history.push("/places");
         setOpen(false)
     }
     const openFood = () => {
-        setPage(PAGES.FOOD)
+        history.push("/foods");
         setOpen(false)
     }
     const openSettingsMenu = () => {
         setOpenSettings(true);
-
-        console.log(page)
-        console.log(homePage)
     }
     const closeSettingsMenu = () => {
         setOpenSettings(false)
@@ -161,6 +169,10 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
                     </List>
                 </Drawer>
                 <Typography variant='h4' className={classes.title}>Travel Blog</Typography>
+            
+                    {!userData.user ? (<ButtonGroup><Button onClick={register}>Register</Button>
+                    <Button onClick={login}>Login</Button></ButtonGroup>) : (<Button variant='outlined' onClick={logout}>Log out</Button>)}
+    
                 <Dialog className={classes.menu} open={openSettings} onClose={closeSettingsMenu} fullWidth maxWidth='sm'>
                     <DialogTitle>Settings</DialogTitle>
                     <Divider />

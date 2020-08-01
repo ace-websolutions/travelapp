@@ -1,19 +1,45 @@
-import React, {createContext, useReducer, useState} from 'react'
+import React, {createContext, useReducer, useState, useEffect} from 'react'
 import {BlogReducer, PlaceReducer, FoodReducer,INITIAL_BLOGS, INITIAL_PLACES, PAGES, INITIAL_FOODS, ACTIONS} from './AppReducer'
 import axios from 'axios'
 
 export const AppContext = createContext();
-
 
 function AppProvider({ children }) {
    const [blogs, dispatchBlogs] = useReducer(BlogReducer, INITIAL_BLOGS)
    const [places, dispatchPlaces] = useReducer(PlaceReducer, INITIAL_PLACES)
    const [foods, dispatchFoods] = useReducer(FoodReducer, INITIAL_FOODS)
    const [homePage, setHomePage] = useState(PAGES.BLOG)
-   const [page, setPage] = useState(homePage)
-   const [loading, setLoading] = useState(true)
+   const [loading, setLoading] = useState(false)
    const [snack, setSnack] = useState(false)
    const [snackMessage, setSnackMessage] = useState('')
+   const [userData, setUserData] = useState({
+       token: undefined,
+       user: undefined
+   })
+
+   useEffect(() =>{
+    const checkLoggedIn = async () =>{
+        let token = localStorage.getItem('auth-token')
+        if(token === null){
+            localStorage.setItem("auth-token", "")
+            token = ""
+        }
+        const tokenRes = await axios.post(
+            "http://localhost:5000/api/v1/users/tokenValid", null, {headers: {"x-auth-token":token}}
+        )
+        if(tokenRes.data){
+            const userRes = await axios.get(
+                "http://localhost:5000/api/v1/users/", {headers: {"x-auth-token":token}});
+            console.log(userRes)
+                setUserData({
+                token,
+                user: userRes.data
+            })
+        }
+    }
+
+    checkLoggedIn();
+   }, []);
 
    const snackMessageController = (currentPage, action) => {
        if(currentPage === PAGES.BLOG){
@@ -173,11 +199,12 @@ const editFood = async (id, index, food) => {
 }
 
     return (
-        <AppContext.Provider value={{blogs, dispatchBlogs, places, dispatchPlaces, page, setPage, 
+        <AppContext.Provider value={{blogs, dispatchBlogs, places, dispatchPlaces, 
         foods, dispatchFoods, loading, setLoading, snack, setSnack, snackMessageController,
         getBlogs, addBlog, deleteBlog, editBlog,
         getPlaces, addPlace, deletePlace, editPlace,
-        getFoods, addFood, deleteFood, editFood, snackMessage, setSnackMessage, homePage, setHomePage}}> 
+        getFoods, addFood, deleteFood, editFood, snackMessage, setSnackMessage,
+        homePage, setHomePage, userData, setUserData}}> 
             {children}
         </AppContext.Provider>
     )

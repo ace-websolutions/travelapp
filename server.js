@@ -7,6 +7,7 @@ const path = require('path')
 dotenv.config();
 connectDB();
 
+const users = require("./routes/users")
 const blogs = require("./routes/blogs");
 const places = require("./routes/places");
 const foods = require("./routes/foods");
@@ -16,6 +17,7 @@ const app = express();
 app.use(cors())
 app.use(express.json());
 
+app.use('/api/v1', users)
 app.use('/api/v1', blogs)
 app.use('/api/v1', places)
 app.use('/api/v1', foods)

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {BrowserRouter as Router} from 'react-router-dom'
 import AppProvider from './context/AppContext'
 import Nav from './components/Nav'
 import Body from './components/Body'
@@ -30,27 +31,34 @@ function App() {
     body:{
       marginTop: theme.spacing(3),
       marginBottom: theme.spacing(3),
+    },
+    center: {
+      display:'flex',
+      justifyContent: "center",
+      alignItems: 'center'
     }
   }))
   const classes = useStyles();
   
+  // add snackbar to successful login / registration as well as bad form submission err
   return (
-    <AppProvider>
-    <ThemeProvider theme={themeCustom}>
-       <Paper className={classes.paper}>
-       <Nav dark={dark} setDark={setDark} primary={primary} setPrimary={setPrimary}
-        secondary={secondary} setSecondary={setSecondary}/>
-        <Grid container className={classes.body}>
-          <Grid item xs={1} sm={2} />
-          <Grid container item xs={10} sm={8}>
-              <Body />
-          </Grid>
-          <Grid item xs={1} sm={2} />
-        </Grid>
-       <Footer />
-        </Paper>
+    <Router>
+      <AppProvider>
+        <ThemeProvider theme={themeCustom}>
+          <Paper className={classes.paper}>
+            <Nav dark={dark} setDark={setDark} primary={primary} setPrimary={setPrimary} secondary={secondary} setSecondary={setSecondary}/>
+              <Grid container className={classes.body}>
+                <Grid item xs={1} sm={2} />
+                    <Grid container item xs={10} sm={8} className={classes.center}>
+                      <Body />
+                    </Grid>
+                  <Grid item xs={1} sm={2} />
+              </Grid>
+            <Footer />
+          </Paper>
         </ThemeProvider>
-    </AppProvider>
+      </AppProvider>
+    </Router>
   );
 }
 
