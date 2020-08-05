@@ -8,6 +8,7 @@ export const ACTIONS = {
     EDIT_BLOG:'edit-blog',
     EDIT_PLACE:'edit-place',
     EDIT_FOOD:'edit-food',
+    EDIT_USER:'edit-user',
     DELETE_BLOG:'delete-blog',
     DELETE_PLACE:'delete-place',
     DELETE_FOOD:'delete-food',
@@ -25,6 +26,7 @@ export const MESSAGE = {
     DELETE_BLOG:'Blog deleted.',
     DELETE_PLACE:'Location deleted.',
     DELETE_FOOD:'Post deleted.',
+    UPDATE_SETTINGS:'Settings saved!'
 }
 export const PAGES = {
     BLOG:'blog',
@@ -80,6 +82,14 @@ export const FoodReducer = (foods, action) => {
             return {...foods, foods:foods.foods.filter(food => food._id !== action.payload)}
         default:
             return foods;
+    }
+}
+export const UserReducer = (user, action) => {
+    switch (action.type) {
+        case ACTIONS.EDIT_USER:
+            return {...user, user:action.payload}
+        default:
+            return user;
     }
 }
 

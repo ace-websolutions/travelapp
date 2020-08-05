@@ -10,8 +10,6 @@ import Food from './Food'
 function Body() {
   //  const {homePage} = useContext(AppContext)
 
-    // PUT SNACK MESSAGE IN THE DISPATCH IN REDUCER
-
     return(
         <Switch>
             <Route path="/" exact component={Blogs} />

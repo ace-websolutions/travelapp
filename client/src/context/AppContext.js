@@ -11,9 +11,10 @@ function AppProvider({ children }) {
    const [page, setPage] = useState(PAGES.LOGIN)
    const [homePage, setHomePage] = useState(PAGES.BLOG)
    const [loading, setLoading] = useState(false)
-   const [snack, setSnack] = useState(false)
-   const [snackMessage, setSnackMessage] = useState('')
+   const [snackMessage, setSnackMessage] = useState(undefined)
    const [userData, setUserData] = useState({token: undefined, user: undefined})
+
+   //ADD user preferences to db and load - i.e colors & theme
 
     const config = {
         headers: {
@@ -60,7 +61,6 @@ function AppProvider({ children }) {
             const res = await axios.post('http://localhost:5000/api/v1/blogs', blog, configData)
             dispatchBlogs({type: ACTIONS.ADD_BLOG, payload: res.data})
             setSnackMessage(MESSAGE.ADD_BLOG)
-            setSnack(true)
         }catch(err){
            console.log(err);
        }
@@ -70,7 +70,6 @@ function AppProvider({ children }) {
            await axios.delete(`http://localhost:5000/api/v1/blogs/${id}`, config)
            dispatchBlogs({type:ACTIONS.DELETE_BLOG, payload: id})
            setSnackMessage(MESSAGE.DELETE_BLOG)
-           setSnack(true)
        }catch(err){
         console.log(err);
     }
@@ -80,7 +79,6 @@ function AppProvider({ children }) {
            await axios.patch(`http://localhost:5000/api/v1/blogs/${id}`, blog, configData)
            dispatchBlogs({type:ACTIONS.EDIT_BLOG, payload:{index, blog}})
            setSnackMessage(MESSAGE.EDIT_BLOG)
-           setSnack(true)
         }catch(err){
         console.log(err);
     }
@@ -98,7 +96,6 @@ function AppProvider({ children }) {
             const res = await axios.post('http://localhost:5000/api/v1/places', place, configData)
             dispatchPlaces({type: ACTIONS.ADD_PLACE, payload: res.data})
             setSnackMessage(MESSAGE.ADD_PLACE)
-            setSnack(true)
        }catch(err){
            console.log(err);
        }
@@ -108,7 +105,6 @@ function AppProvider({ children }) {
            await axios.delete(`http://localhost:5000/api/v1/places/${id}`, config)
            dispatchPlaces({type:ACTIONS.DELETE_PLACE, payload: id})
            setSnackMessage(MESSAGE.DELETE_PLACE)
-           setSnack(true)
        }catch(err){
         console.log(err);
     }
@@ -118,7 +114,6 @@ function AppProvider({ children }) {
            await axios.patch(`http://localhost:5000/api/v1/places/${id}`, place, configData)
            dispatchPlaces({type:ACTIONS.EDIT_PLACE, payload:{index, place}})
            setSnackMessage(MESSAGE.EDIT_PLACE)
-           setSnack(true)
        }catch(err){
         console.log(err);
     }
@@ -137,7 +132,6 @@ const addFood = async (food) =>{
          const res = await axios.post('http://localhost:5000/api/v1/foods', food, configData)
          dispatchFoods({type: ACTIONS.ADD_FOOD, payload: res.data})
          setSnackMessage(MESSAGE.ADD_FOOD)
-         setSnack(true)
     }catch(err){
         console.log(err);
     }
@@ -147,7 +141,6 @@ const deleteFood = async (id) =>{
         await axios.delete(`http://localhost:5000/api/v1/foods/${id}`, config)
         dispatchFoods({type:ACTIONS.DELETE_FOOD, payload: id})
         setSnackMessage(MESSAGE.DELETE_FOOD)
-        setSnack(true)
     }catch(err){
      console.log(err);
  }
@@ -157,7 +150,6 @@ const editFood = async (id, index, food) => {
         await axios.patch(`http://localhost:5000/api/v1/foods/${id}`, food, configData)
         dispatchFoods({type:ACTIONS.EDIT_FOOD, payload:{index, food}})
         setSnackMessage(MESSAGE.EDIT_FOOD)
-        setSnack(true)
     }catch(err){
      console.log(err);
  }
@@ -165,11 +157,11 @@ const editFood = async (id, index, food) => {
 
     return (
         <AppContext.Provider value={{blogs, dispatchBlogs, places, dispatchPlaces, 
-        foods, dispatchFoods, loading, setLoading, snack, setSnack,
+        foods, dispatchFoods, loading, setLoading,
         getBlogs, addBlog, deleteBlog, editBlog,
         getPlaces, addPlace, deletePlace, editPlace,
         getFoods, addFood, deleteFood, editFood, snackMessage, setSnackMessage,
-        homePage, setHomePage, userData, setUserData, page, setPage, checkLoggedIn}}> 
+        homePage, setHomePage, userData, setUserData, page, setPage, checkLoggedIn, configData}}> 
             {children}
         </AppContext.Provider>
     )

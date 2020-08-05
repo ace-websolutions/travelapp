@@ -20,7 +20,8 @@ router.post("/users/register", async (req, res) => {
             return res.status(400).json({msg: "An account with this email already exists."})
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt)
-        const user = await Users.create({...req.body, password: passwordHash});
+        const user = await Users.create({...req.body, 
+            password: passwordHash, primary: 'Blue', secondary: 'Red', theme:false});
         return res.status(200).json(user)
     }catch(err){
         return res.status(500).json({
@@ -47,7 +48,8 @@ router.post("/users/login", async (req, res) => {
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
             return res.status(200).json({
                 token,
-                user:{ id: user._id, firstName: user.firstName },
+                user:{ id: user._id, firstName: user.firstName, 
+                primary: user.primary, secondary: user.secondary, theme: user.theme },
             })       
     }catch(err){
         return res.status(500).json({
@@ -92,8 +94,36 @@ router.get("/users/", auth, async (req, res) =>{
         const user = await Users.findById(req.user)
         return res.json({
             firstName: user.firstName,
-            id: user._id
+            id: user._id,
+            primary: user.primary, 
+            secondary: user.secondary, 
+            theme: user.theme 
         })
+    }catch(err){
+        return res.status(500).json({
+            error:"Server Error"
+        })
+    }
+})
+router.post("/users/:id", auth, async (req, res) =>{
+    try{
+        const user = await Users.findOne({_id: req.params.id});
+        if(!user){
+            return res.status(404).json({
+                error:"No user found"
+            })
+        }
+        if (req.body.primary != null) {
+        user.primary = req.body.primary;
+        }
+        if (req.body.secondary != null) {
+        user.secondary = req.body.secondary;
+        }
+        if (req.body.theme != null) {
+        user.theme = req.body.theme;
+        }
+        const updateUser = await user.save();
+        return res.status(201).json(updateUser)
     }catch(err){
         return res.status(500).json({
             error:"Server Error"

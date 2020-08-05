@@ -2,7 +2,8 @@ import React , {useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom';
 import {AppContext} from '../context/AppContext'
 import axios from 'axios';
-import {TextField, Button, Paper, makeStyles, Typography} from '@material-ui/core'
+import {TextField, Button, Paper, makeStyles, Typography, Snackbar} from '@material-ui/core'
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     container:{
@@ -21,8 +22,9 @@ const useStyles = makeStyles((theme) => ({
 
 function Login() {
     const classes = useStyles();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(undefined);
 
     const { userData,setUserData, setSnack, setSnackMessage } = useContext(AppContext);
     const history = useHistory();
@@ -40,12 +42,15 @@ function Login() {
             setSnackMessage(!userData.user ? '' : `Welcome ${userData.user.firstName}`)
             setSnack(true)
         }catch(err){
-            console.log(err)
+            err.response.data.msg && setError(err.response.data.msg)
         }
     }
     return (
         <Paper className={classes.container}>
             <form onSubmit={submit} className={classes.form}>
+            <Snackbar open={error !== undefined} anchorOrigin={{vertical:'top', horizontal:'center'}} 
+            variant="filled" autoHideDuration={3000} onClose={() => setError(undefined)}>
+                <Alert severity="error">{error}</Alert></Snackbar>
             <Typography variant='h3'>Login</Typography>
              <TextField className={classes.textField} variant="outlined" label="Email" type='text' value={email} onChange={(e) => setEmail(e.target.value)}/>
              <TextField className={classes.textField} variant="outlined" label="Password" type='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
