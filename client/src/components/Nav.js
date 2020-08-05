@@ -1,8 +1,9 @@
 import React, {useState, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {AppContext} from '../context/AppContext'
-import {PAGES} from '../context/AppReducer'
-import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles, Switch, Dialog, DialogTitle, Divider, MenuItem, Select, ButtonGroup, Button} from '@material-ui/core'
+import {PAGES, ACTIONS} from '../context/AppReducer'
+import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles, Switch, Dialog, DialogTitle, Divider, MenuItem, Select, ButtonGroup, Button, Snackbar} from '@material-ui/core'
+import Alert from '@material-ui/lab/Alert';
 import MenuIcon from '@material-ui/icons/Menu';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ExploreIcon from '@material-ui/icons/Explore';
@@ -85,7 +86,9 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [openSettings, setOpenSettings] = useState(false);
-    const {homePage, setHomePage, userData, setUserData} = useContext(AppContext)
+    const { homePage, setHomePage, userData, setUserData,
+        dispatchBlogs, dispatchPlaces, dispatchFoods, 
+        snack, setSnack, snackMessage } = useContext(AppContext)
     const history = useHistory();
 
     const register = () => {
@@ -99,7 +102,10 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
             token:undefined,
             user: undefined
         })
-        localStorage.setItem("auth-token", "")
+        localStorage.removeItem("x-auth-token")
+        dispatchBlogs({type: ACTIONS.GET_BLOG, payload: []});
+        dispatchPlaces({type: ACTIONS.GET_PLACE, payload: []});
+        dispatchFoods({type: ACTIONS.GET_FOOD, payload: []});
         history.push("/login");
     }
     const openBlog = () => {
@@ -136,6 +142,9 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
     }
     return (
         <AppBar position='static'>
+                    <Snackbar open={snack} anchorOrigin={{vertical:'top', horizontal:'center'}} 
+            variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}>
+                <Alert sevarity="success">{snackMessage}</Alert></Snackbar>
             <Toolbar className={classes.toolBar}>
                 <IconButton className={classes.menuIcon} onClick={() => setOpen(true)}>
                     <MenuIcon />
@@ -168,7 +177,7 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
                         </ListItem>
                     </List>
                 </Drawer>
-                <Typography variant='h4' className={classes.title}>Travel Blog</Typography>
+    <Typography variant='h4' className={classes.title}>{!userData.user ? 'Travel Blog' : userData.user.firstName}</Typography>
             
                     {!userData.user ? (<ButtonGroup><Button onClick={register}>Register</Button>
                     <Button onClick={login}>Login</Button></ButtonGroup>) : (<Button variant='outlined' onClick={logout}>Log out</Button>)}

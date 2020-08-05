@@ -1,15 +1,13 @@
 import React, {useContext, useState, useEffect} from 'react'
 import {AppContext} from '../context/AppContext'
-import {ACTIONS} from '../context/AppReducer'
+import { PAGES } from '../context/AppReducer'
 import {makeStyles, GridList, GridListTile, GridListTileBar, Fab, Container,
-    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Button, Backdrop, Snackbar, ButtonGroup,
-     IconButton, Menu, MenuItem, ListItemIcon,  } from '@material-ui/core'
+    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Button, Backdrop, ButtonGroup,
+      Menu, MenuItem, ListItemIcon,  } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     buttons:{
@@ -36,14 +34,13 @@ const useStyles = makeStyles((theme) => ({
       },
 }))
 const emptyFood = {
-    image:"",
+    image:"https://source.unsplash.com/400x300/?food",
     name:"",
     place:""
 }
 function Food() {
     const classes = useStyles();
-    const {foods, dispatchFoods, loading, setLoading, snack, setSnack, snackMessageController, page,
-        getFoods, editFood, deleteFood, addFood, snackMessage, setSnackMessage} = useContext(AppContext);
+    const { foods, loading, editFood, deleteFood, addFood, checkLoggedIn } = useContext(AppContext);
     const [add, setAdd] = useState(false);
     const [edit, setEdit] = useState(false);
     const [prompt, setPrompt] = useState(false);
@@ -55,17 +52,11 @@ function Food() {
     const [openMenu, setOpenMenu] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
 
-
-    useEffect( () =>{
-        loadPage();
+    useEffect(() =>{
+        checkLoggedIn(PAGES.FOOD);
+        // eslint-disable-next-line
     }, [])
-
-    const loadPage = async () => {
-        setLoading(true);
-        await getFoods();
-        setLoading(false)
-    }
-    
+   
     const openNewFood = () => {
         setAdd(true);
         setOpenMenu(false)
@@ -96,13 +87,9 @@ function Food() {
     const submitFood = async () => {
         if(editing){
             await editFood(newFood._id, foodIndex, newFood)
-            setSnackMessage(snackMessageController(page, 'edit'))
-            setSnack(true)
             setEdit(false)
         }else{
             await addFood(newFood)
-            setSnackMessage(snackMessageController(page, 'add'))
-            setSnack(true)
         }
         // add progress while adding
         setNewFood(emptyFood);
@@ -130,14 +117,11 @@ function Food() {
       };
     return (
         <Container>
-                    <Snackbar open={snack} anchorOrigin={{vertical:'top', horizontal:'center'}} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}>
-                        <Alert sevarity="success">{snackMessage}</Alert></Snackbar>
         <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
-
         <GridList cellHeight={180} className={classes.root}>
             {foods.foods.map((food) => (
                 <GridListTile key={food._id}>
-                    <img src={food.image} />
+                    <img src={food.image}  alt="random food"/>
                     <GridListTileBar title={food.name} subtitle={food.place} actionIcon={
                         edit ? (
                             <ButtonGroup className={classes.buttons}>
@@ -199,8 +183,6 @@ function Food() {
               <Button color="primary" variant="outlined" onClick={() => {
                   deleteFood(promptId)
                   handlePromptClose();
-                  setSnackMessage(snackMessageController(page, "delete"))
-                  setSnack(true)
                   setEdit(false)
                 }}>
                 Yes

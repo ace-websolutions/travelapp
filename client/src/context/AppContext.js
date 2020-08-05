@@ -1,5 +1,5 @@
-import React, {createContext, useReducer, useState, useEffect} from 'react'
-import {BlogReducer, PlaceReducer, FoodReducer,INITIAL_BLOGS, INITIAL_PLACES, PAGES, INITIAL_FOODS, ACTIONS} from './AppReducer'
+import React, {createContext, useReducer, useState } from 'react'
+import {BlogReducer, PlaceReducer, FoodReducer,INITIAL_BLOGS, INITIAL_PLACES, PAGES, INITIAL_FOODS, ACTIONS, MESSAGE} from './AppReducer'
 import axios from 'axios'
 
 export const AppContext = createContext();
@@ -8,148 +8,117 @@ function AppProvider({ children }) {
    const [blogs, dispatchBlogs] = useReducer(BlogReducer, INITIAL_BLOGS)
    const [places, dispatchPlaces] = useReducer(PlaceReducer, INITIAL_PLACES)
    const [foods, dispatchFoods] = useReducer(FoodReducer, INITIAL_FOODS)
+   const [page, setPage] = useState(PAGES.LOGIN)
    const [homePage, setHomePage] = useState(PAGES.BLOG)
    const [loading, setLoading] = useState(false)
    const [snack, setSnack] = useState(false)
    const [snackMessage, setSnackMessage] = useState('')
-   const [userData, setUserData] = useState({
-       token: undefined,
-       user: undefined
-   })
+   const [userData, setUserData] = useState({token: undefined, user: undefined})
 
-   useEffect(() =>{
-    const checkLoggedIn = async () =>{
-        let token = localStorage.getItem('auth-token')
-        if(token === null){
-            localStorage.setItem("auth-token", "")
-            token = ""
+    const config = {
+        headers: {
+            "x-auth-token": userData.token || localStorage.getItem('x-auth-token')
         }
-        const tokenRes = await axios.post(
-            "http://localhost:5000/api/v1/users/tokenValid", null, {headers: {"x-auth-token":token}}
-        )
-        if(tokenRes.data){
-            const userRes = await axios.get(
-                "http://localhost:5000/api/v1/users/", {headers: {"x-auth-token":token}});
-            console.log(userRes)
-                setUserData({
-                token,
-                user: userRes.data
-            })
+    }
+    const configData = {
+        headers: {
+            'Content-Type':'application/json',
+            "x-auth-token": userData.token || localStorage.getItem('x-auth-token')
         }
     }
 
-    checkLoggedIn();
-   }, []);
-
-   const snackMessageController = (currentPage, action) => {
-       if(currentPage === PAGES.BLOG){
-           if(action === "add"){
-               return "Blog added!"
-           }else if(action === "edit"){
-               return "Blog saved!"
-           }else if(action === "delete"){
-               return "Blog deleted!"
-           }
-       } 
-       if(currentPage === PAGES.PLACES) {
-            if(action === "add"){
-                return "Location added!"
-            }else if(action === "edit"){
-                return "Location saved!"
-            }else if(action === "delete"){
-                return "Location deleted!"
+    const checkLoggedIn = async (page) =>{
+        try{
+            let token = localStorage.getItem('x-auth-token')
+            setUserData({...userData, token})
+            if(token === null){
+                localStorage.setItem("x-auth-token", "")
+                token = ""
             }
-    }
-       if(currentPage === PAGES.FOOD) {
-        if(action === "add"){
-            return "Post added!"
-        }else if(action === "edit"){
-            return "Post saved!"
-        }else if(action === "delete"){
-            return "Post deleted!"
+            const tokenRes = await axios.post("http://localhost:5000/api/v1/users/tokenValid", null, {headers: {"x-auth-token":token}})
+            if(tokenRes.data){
+                const userRes = await axios.get("http://localhost:5000/api/v1/users/", {headers: {"x-auth-token":token}});
+                setUserData({...userData, token, user: userRes.data});
+                if(page === PAGES.BLOG) return getBlogs();
+                if(page === PAGES.PLACES) return getPlaces();
+                if(page === PAGES.FOOD) return getFoods();
+            }
+        }catch(err){
+            console.log(err)
         }
     }
-   }
    const getBlogs = async () => {
        try{
-           const res = await axios.get("http://localhost:5000/api/v1/blogs");
-           dispatchBlogs({type: ACTIONS.GET_BLOG, payload: res.data.data});
+           const res = await axios.get("http://localhost:5000/api/v1/blogs", config);
+           dispatchBlogs({type: ACTIONS.GET_BLOG, payload: res.data});
        }catch(err){
            console.log(err);
        }
    }
    const addBlog = async (blog) =>{
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }   
         try{
-            const res = await axios.post('http://localhost:5000/api/v1/blogs', blog, config)
-            dispatchBlogs({type: ACTIONS.ADD_BLOG, payload: res.data.data})
-       }catch(err){
+            const res = await axios.post('http://localhost:5000/api/v1/blogs', blog, configData)
+            dispatchBlogs({type: ACTIONS.ADD_BLOG, payload: res.data})
+            setSnackMessage(MESSAGE.ADD_BLOG)
+            setSnack(true)
+        }catch(err){
            console.log(err);
        }
    }
    const deleteBlog = async (id) =>{
        try {
-           await axios.delete(`http://localhost:5000/api/v1/blogs/${id}`)
+           await axios.delete(`http://localhost:5000/api/v1/blogs/${id}`, config)
            dispatchBlogs({type:ACTIONS.DELETE_BLOG, payload: id})
+           setSnackMessage(MESSAGE.DELETE_BLOG)
+           setSnack(true)
        }catch(err){
         console.log(err);
     }
    }
    const editBlog = async (id, index, blog) => {
-       const config = {
-           headers: {
-               'Content-Type':'application/json'
-           }
-       }
        try{
-           await axios.patch(`http://localhost:5000/api/v1/blogs/${id}`, blog, config)
+           await axios.patch(`http://localhost:5000/api/v1/blogs/${id}`, blog, configData)
            dispatchBlogs({type:ACTIONS.EDIT_BLOG, payload:{index, blog}})
-       }catch(err){
+           setSnackMessage(MESSAGE.EDIT_BLOG)
+           setSnack(true)
+        }catch(err){
         console.log(err);
     }
    }
    const getPlaces = async () => {
        try{
-           const res = await axios.get("http://localhost:5000/api/v1/places");
-           dispatchPlaces({type: ACTIONS.GET_PLACE, payload: res.data.data});
+           const res = await axios.get("http://localhost:5000/api/v1/places", config);
+           dispatchPlaces({type: ACTIONS.GET_PLACE, payload: res.data});
        }catch(err){
            console.log(err);
        }
    }
-   const addPlace = async (place) =>{
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }   
+   const addPlace = async (place) =>{ 
         try{
-            const res = await axios.post('http://localhost:5000/api/v1/places', place, config)
-            dispatchPlaces({type: ACTIONS.ADD_PLACE, payload: res.data.data})
+            const res = await axios.post('http://localhost:5000/api/v1/places', place, configData)
+            dispatchPlaces({type: ACTIONS.ADD_PLACE, payload: res.data})
+            setSnackMessage(MESSAGE.ADD_PLACE)
+            setSnack(true)
        }catch(err){
            console.log(err);
        }
    }
    const deletePlace = async (id) =>{
        try {
-           await axios.delete(`http://localhost:5000/api/v1/places/${id}`)
+           await axios.delete(`http://localhost:5000/api/v1/places/${id}`, config)
            dispatchPlaces({type:ACTIONS.DELETE_PLACE, payload: id})
+           setSnackMessage(MESSAGE.DELETE_PLACE)
+           setSnack(true)
        }catch(err){
         console.log(err);
     }
    }
    const editPlace = async (id, index, place) => {
-       const config = {
-           headers: {
-               'Content-Type':'application/json'
-           }
-       }
        try{
-           await axios.patch(`http://localhost:5000/api/v1/places/${id}`, place, config)
+           await axios.patch(`http://localhost:5000/api/v1/places/${id}`, place, configData)
            dispatchPlaces({type:ACTIONS.EDIT_PLACE, payload:{index, place}})
+           setSnackMessage(MESSAGE.EDIT_PLACE)
+           setSnack(true)
        }catch(err){
         console.log(err);
     }
@@ -157,42 +126,38 @@ function AppProvider({ children }) {
 
    const getFoods = async () => {
     try{
-        const res = await axios.get("http://localhost:5000/api/v1/foods");
-        dispatchFoods({type: ACTIONS.GET_FOOD, payload: res.data.data});
+        const res = await axios.get("http://localhost:5000/api/v1/foods", config);
+        dispatchFoods({type: ACTIONS.GET_FOOD, payload: res.data});
     }catch(err){
         console.log(err);
     }
 }
 const addFood = async (food) =>{
-     const config = { 
-         headers: {
-             'Content-Type': 'application/json'
-         }
-     }   
      try{
-         const res = await axios.post('http://localhost:5000/api/v1/foods', food, config)
-         dispatchFoods({type: ACTIONS.ADD_FOOD, payload: res.data.data})
+         const res = await axios.post('http://localhost:5000/api/v1/foods', food, configData)
+         dispatchFoods({type: ACTIONS.ADD_FOOD, payload: res.data})
+         setSnackMessage(MESSAGE.ADD_FOOD)
+         setSnack(true)
     }catch(err){
         console.log(err);
     }
 }
 const deleteFood = async (id) =>{
     try {
-        await axios.delete(`http://localhost:5000/api/v1/foods/${id}`)
+        await axios.delete(`http://localhost:5000/api/v1/foods/${id}`, config)
         dispatchFoods({type:ACTIONS.DELETE_FOOD, payload: id})
+        setSnackMessage(MESSAGE.DELETE_FOOD)
+        setSnack(true)
     }catch(err){
      console.log(err);
  }
 }
 const editFood = async (id, index, food) => {
-    const config = {
-        headers: {
-            'Content-Type':'application/json'
-        }
-    }
     try{
-        await axios.patch(`http://localhost:5000/api/v1/foods/${id}`, food, config)
+        await axios.patch(`http://localhost:5000/api/v1/foods/${id}`, food, configData)
         dispatchFoods({type:ACTIONS.EDIT_FOOD, payload:{index, food}})
+        setSnackMessage(MESSAGE.EDIT_FOOD)
+        setSnack(true)
     }catch(err){
      console.log(err);
  }
@@ -200,11 +165,11 @@ const editFood = async (id, index, food) => {
 
     return (
         <AppContext.Provider value={{blogs, dispatchBlogs, places, dispatchPlaces, 
-        foods, dispatchFoods, loading, setLoading, snack, setSnack, snackMessageController,
+        foods, dispatchFoods, loading, setLoading, snack, setSnack,
         getBlogs, addBlog, deleteBlog, editBlog,
         getPlaces, addPlace, deletePlace, editPlace,
         getFoods, addFood, deleteFood, editFood, snackMessage, setSnackMessage,
-        homePage, setHomePage, userData, setUserData}}> 
+        homePage, setHomePage, userData, setUserData, page, setPage, checkLoggedIn}}> 
             {children}
         </AppContext.Provider>
     )

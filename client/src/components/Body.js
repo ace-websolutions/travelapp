@@ -1,6 +1,6 @@
-import React, { useContext} from 'react'
+import React, { /* useContext */ } from 'react'
 import {Route, Switch} from 'react-router-dom'
-import {AppContext} from '../context/AppContext'
+// import {AppContext} from '../context/AppContext'
 import Register from './Register'
 import Login from './Login'
 import Blogs from './Blogs'
@@ -8,7 +8,9 @@ import Places from './Places'
 import Food from './Food'
 
 function Body() {
-    const {homePage} = useContext(AppContext)
+  //  const {homePage} = useContext(AppContext)
+
+    // PUT SNACK MESSAGE IN THE DISPATCH IN REDUCER
 
     return(
         <Switch>

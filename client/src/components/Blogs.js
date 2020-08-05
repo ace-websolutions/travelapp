@@ -1,13 +1,13 @@
 import React, {useContext, useState, useEffect} from 'react'
-import {AppContext} from '../context/AppContext'
+import { AppContext } from '../context/AppContext'
+import { PAGES } from '../context/AppReducer'
 import { Grid, Card, CardHeader, CardContent, CardActions, Button, Fab, makeStyles,
-Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Backdrop, Snackbar,
+Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Backdrop,
 Menu, MenuItem, ListItemIcon  } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     date: {
@@ -41,8 +41,7 @@ const emptyBlog = {
 
 function Blogs() {
     const classes = useStyles();
-    const { blogs, loading, setLoading, snack, setSnack, snackMessageController, page,
-    getBlogs, editBlog, deleteBlog, addBlog, snackMessage, setSnackMessage } = useContext(AppContext)
+    const { blogs, loading, editBlog, deleteBlog, addBlog, checkLoggedIn } = useContext(AppContext)
     const [add, setAdd] = useState(false);
     const [edit, setEdit] = useState(false);
     const [prompt, setPrompt] = useState(false);
@@ -54,15 +53,11 @@ function Blogs() {
     const [openMenu, setOpenMenu] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
 
-    useEffect( () =>{
-        //loadPage();
+    useEffect(() =>{
+        checkLoggedIn(PAGES.BLOG);
+        // eslint-disable-next-line
     }, [])
 
-    const loadPage = async () => {
-        setLoading(true);
-        await getBlogs();
-        setLoading(false)
-    }
     const openNewBlog = () => {
         setAdd(true);
         setOpenMenu(false)
@@ -93,19 +88,14 @@ function Blogs() {
     const submitBlog = async () => {
         if(editing){
            await  editBlog(newBlog._id, blogIndex, newBlog)
-           setSnackMessage(snackMessageController(page, 'edit'))
-           setSnack(true)
            setEdit(false)
         }else{
             await addBlog(newBlog)
-            setSnackMessage(snackMessageController(page, 'add'))
-            setSnack(true)
         }
         setNewBlog(emptyBlog);
         setEditing(false);
         setBlogIndex(0);
         setAdd(false);
-        setSnack(true);
     }
     const setupEditBlog = (blog, index) => {
         setAdd(true);
@@ -127,7 +117,6 @@ function Blogs() {
       };
     return (
         <>
-            <Snackbar open={snack} anchorOrigin={{vertical:'top', horizontal:'center'}} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage}</Alert></Snackbar>
             <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
             <Grid container direction='column-reverse' spacing={2} className={classes.bottom}>
                 {blogs.blogs.map(blog => (
@@ -192,8 +181,6 @@ function Blogs() {
               <Button color="primary" variant="outlined" onClick={() => {
                   deleteBlog(promptId)
                   handlePromptClose();
-                  setSnackMessage(snackMessageController(page, "delete"))
-                  setSnack(true)
                   setEdit(false)
                 }}>
                 Yes

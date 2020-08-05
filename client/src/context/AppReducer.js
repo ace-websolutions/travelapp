@@ -12,10 +12,26 @@ export const ACTIONS = {
     DELETE_PLACE:'delete-place',
     DELETE_FOOD:'delete-food',
 }
+export const MESSAGE = {
+    GET_BLOG:'',
+    GET_PLACE:'',
+    GET_FOOD:'',
+    ADD_BLOG:'Blog added!',
+    ADD_PLACE:'Location added!',
+    ADD_FOOD:'Post added!',
+    EDIT_BLOG:'Blog saved!',
+    EDIT_PLACE:'Location saved!',
+    EDIT_FOOD:'Post saved!',
+    DELETE_BLOG:'Blog deleted.',
+    DELETE_PLACE:'Location deleted.',
+    DELETE_FOOD:'Post deleted.',
+}
 export const PAGES = {
     BLOG:'blog',
     PLACES:'places',
-    FOOD:'food'
+    FOOD:'food',
+    LOGIN:'login',
+    REGISTER:'register',
 }
 
 export const BlogReducer = (blogs, action) => {
@@ -69,16 +85,13 @@ export const FoodReducer = (foods, action) => {
 
 export const INITIAL_BLOGS = {
     blogs: [],
-    error: null
 }
 export const INITIAL_PLACES = {
     places: [],
-    error: null
 
 }
 export const INITIAL_FOODS = {
     foods: [],
-    error: null
 
 }
 

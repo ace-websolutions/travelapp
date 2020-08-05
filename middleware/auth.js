@@ -13,8 +13,7 @@ const auth = (req, res, next) =>{
     
     }catch(err){
         return res.status(500).json({
-            success: false,
-            error:"Server Error"
+            error:"Server Auth Error"
         })
     }
 }

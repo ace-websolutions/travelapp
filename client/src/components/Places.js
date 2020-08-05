@@ -1,13 +1,12 @@
 import React, {useContext, useState, useEffect} from 'react'
 import {AppContext} from '../context/AppContext'
-import {ACTIONS} from '../context/AppReducer'
+import { PAGES } from '../context/AppReducer'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Slider, makeStyles, Fab,
-    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Button, ButtonGroup,IconButton, Backdrop, Snackbar, Menu, MenuItem, ListItemIcon  } from '@material-ui/core'
+    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Button, Backdrop, Menu, MenuItem, ListItemIcon  } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     editLabel:{
@@ -45,8 +44,7 @@ const emptyPlace = {
 }
 function Places() {
     const classes = useStyles();
-    const {places, dispatchPlaces, loading, setLoading, snack, setSnack, snackMessageController, page,
-        getPlaces, editPlace, deletePlace, addPlace, snackMessage, setSnackMessage} = useContext(AppContext);
+    const {places, loading, setSnack, editPlace, deletePlace, addPlace, checkLoggedIn} = useContext(AppContext);
     const [add, setAdd] = useState(false);
     const [edit, setEdit] = useState(false);
     const [prompt, setPrompt] = useState(false);
@@ -58,15 +56,11 @@ function Places() {
     const [openMenu, setOpenMenu] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
 
-    useEffect( () =>{
-        loadPage();
+    useEffect(() =>{
+        checkLoggedIn(PAGES.PLACES);
+        // eslint-disable-next-line
     }, [])
 
-    const loadPage = async () => {
-        setLoading(true);
-        await getPlaces();
-        setLoading(false)
-    }
 
     const openNewPlace = () => {
         setAdd(true);
@@ -102,13 +96,9 @@ function Places() {
     const submitPlace = async () => {
         if(editing){
             await editPlace(newPlace._id, placeIndex, newPlace)
-            setSnackMessage(snackMessageController(page, 'edit'))
-            setSnack(true)
             setEdit(false)
         }else{
             await addPlace(newPlace)
-            setSnackMessage(snackMessageController(page, 'add'))
-            setSnack(true)
         }
         setNewPlace(emptyPlace);
         setEditing(false);
@@ -136,9 +126,7 @@ function Places() {
 
     return (
         <>
-                <Snackbar open={snack} anchorOrigin={{vertical:'top', horizontal:'center'}} variant="filled" autoHideDuration={3000} onClose={() => setSnack(false)}><Alert sevarity="success">{snackMessage}</Alert></Snackbar>
         <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
-
         <TableContainer component={Paper}>
             <Table size='small'>
                 <TableHead>
@@ -215,8 +203,6 @@ function Places() {
               <Button color="primary" variant="outlined" onClick={() => {
                   deletePlace(promptId)
                   handlePromptClose();
-                  setSnackMessage(snackMessageController(page, "delete"))
-                  setSnack(true)
                   setEdit(false)
                 }}>
                 Yes

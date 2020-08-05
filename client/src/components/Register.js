@@ -2,7 +2,7 @@ import React , {useState, useContext} from 'react'
 import { useHistory } from 'react-router-dom';
 import {AppContext} from '../context/AppContext'
 import axios from 'axios';
-import {TextField, Button, Paper, SnackBar, makeStyles, Typography} from '@material-ui/core'
+import {TextField, Button, Paper, makeStyles, Typography} from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
     container:{
@@ -24,7 +24,7 @@ function Register() {
     const [password, setPassword] = useState();
     const [checkPassword, setCheckPassword] = useState();
 
-    const {setUserData} = useContext(AppContext);
+    const { setUserData } = useContext(AppContext);
     const history = useHistory();
 
     const submit = async (e) =>{
@@ -39,7 +39,7 @@ function Register() {
             token: loginRes.data.token,
             user: loginRes.data.user
         });
-        localStorage.setItem("auth-token", loginRes.data.token);
+        localStorage.setItem("x-auth-token", loginRes.data.token);
         setEmail('');
         setName('');
         setPassword('');
