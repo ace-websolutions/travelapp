@@ -33,7 +33,7 @@ function Login() {
          e.preventDefault();
         try{
             const loginUser = { email,password }
-            const loginRes = await axios.post("http://localhost:5000/api/v1/users/login", loginUser);
+            const loginRes = await axios.post("/api/v1/users/login", loginUser);
             setUserData({...userData, token: loginRes.data.token, user: loginRes.data.user});
             localStorage.setItem("x-auth-token", loginRes.data.token);
             setEmail('');

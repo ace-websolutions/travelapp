@@ -33,8 +33,8 @@ function Register() {
         e.preventDefault();
         try{
             const newUser = { email, firstName:name, password, passwordCheck: checkPassword}
-            await axios.post("http://localhost:5000/api/v1/users/register", newUser)
-            const loginRes = await axios.post("http://localhost:5000/api/v1/users/login", {
+            await axios.post("/api/v1/users/register", newUser)
+            const loginRes = await axios.post("/api/v1/users/login", {
                 email, 
                 password
             });

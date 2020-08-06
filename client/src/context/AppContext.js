@@ -35,9 +35,9 @@ function AppProvider({ children }) {
                 localStorage.setItem("x-auth-token", "")
                 token = ""
             }
-            const tokenRes = await axios.post("http://localhost:5000/api/v1/users/tokenValid", null, {headers: {"x-auth-token":token}})
+            const tokenRes = await axios.post("/api/v1/users/tokenValid", null, {headers: {"x-auth-token":token}})
             if(tokenRes.data){
-                const userRes = await axios.get("http://localhost:5000/api/v1/users/", {headers: {"x-auth-token":token}});
+                const userRes = await axios.get("/api/v1/users/", {headers: {"x-auth-token":token}});
                 setUserData({...userData, token, user: userRes.data});
                 if(page === PAGES.BLOG) return getBlogs();
                 if(page === PAGES.PLACES) return getPlaces();
@@ -49,7 +49,7 @@ function AppProvider({ children }) {
     }
    const getBlogs = async () => {
        try{
-           const res = await axios.get("http://localhost:5000/api/v1/blogs", config);
+           const res = await axios.get("/api/v1/blogs", config);
            dispatchBlogs({type: ACTIONS.GET_BLOG, payload: res.data});
        }catch(err){
            console.log(err);
@@ -57,7 +57,7 @@ function AppProvider({ children }) {
    }
    const addBlog = async (blog) =>{
         try{
-            const res = await axios.post('http://localhost:5000/api/v1/blogs', blog, configData)
+            const res = await axios.post('/api/v1/blogs', blog, configData)
             dispatchBlogs({type: ACTIONS.ADD_BLOG, payload: res.data})
             setSnackMessage(MESSAGE.ADD_BLOG)
         }catch(err){
@@ -66,7 +66,7 @@ function AppProvider({ children }) {
    }
    const deleteBlog = async (id) =>{
        try {
-           await axios.delete(`http://localhost:5000/api/v1/blogs/${id}`, config)
+           await axios.delete(`/api/v1/blogs/${id}`, config)
            dispatchBlogs({type:ACTIONS.DELETE_BLOG, payload: id})
            setSnackMessage(MESSAGE.DELETE_BLOG)
        }catch(err){
@@ -75,7 +75,7 @@ function AppProvider({ children }) {
    }
    const editBlog = async (id, index, blog) => {
        try{
-           await axios.patch(`http://localhost:5000/api/v1/blogs/${id}`, blog, configData)
+           await axios.patch(`/api/v1/blogs/${id}`, blog, configData)
            dispatchBlogs({type:ACTIONS.EDIT_BLOG, payload:{index, blog}})
            setSnackMessage(MESSAGE.EDIT_BLOG)
         }catch(err){
@@ -84,7 +84,7 @@ function AppProvider({ children }) {
    }
    const getPlaces = async () => {
        try{
-           const res = await axios.get("http://localhost:5000/api/v1/places", config);
+           const res = await axios.get("/api/v1/places", config);
            dispatchPlaces({type: ACTIONS.GET_PLACE, payload: res.data});
        }catch(err){
            console.log(err);
@@ -92,7 +92,7 @@ function AppProvider({ children }) {
    }
    const addPlace = async (place) =>{ 
         try{
-            const res = await axios.post('http://localhost:5000/api/v1/places', place, configData)
+            const res = await axios.post('/api/v1/places', place, configData)
             dispatchPlaces({type: ACTIONS.ADD_PLACE, payload: res.data})
             setSnackMessage(MESSAGE.ADD_PLACE)
        }catch(err){
@@ -101,7 +101,7 @@ function AppProvider({ children }) {
    }
    const deletePlace = async (id) =>{
        try {
-           await axios.delete(`http://localhost:5000/api/v1/places/${id}`, config)
+           await axios.delete(`/api/v1/places/${id}`, config)
            dispatchPlaces({type:ACTIONS.DELETE_PLACE, payload: id})
            setSnackMessage(MESSAGE.DELETE_PLACE)
        }catch(err){
@@ -110,7 +110,7 @@ function AppProvider({ children }) {
    }
    const editPlace = async (id, index, place) => {
        try{
-           await axios.patch(`http://localhost:5000/api/v1/places/${id}`, place, configData)
+           await axios.patch(`/api/v1/places/${id}`, place, configData)
            dispatchPlaces({type:ACTIONS.EDIT_PLACE, payload:{index, place}})
            setSnackMessage(MESSAGE.EDIT_PLACE)
        }catch(err){
@@ -120,7 +120,7 @@ function AppProvider({ children }) {
 
    const getFoods = async () => {
     try{
-        const res = await axios.get("http://localhost:5000/api/v1/foods", config);
+        const res = await axios.get("/api/v1/foods", config);
         dispatchFoods({type: ACTIONS.GET_FOOD, payload: res.data});
     }catch(err){
         console.log(err);
@@ -128,7 +128,7 @@ function AppProvider({ children }) {
 }
 const addFood = async (food) =>{
      try{
-         const res = await axios.post('http://localhost:5000/api/v1/foods', food, configData)
+         const res = await axios.post('/api/v1/foods', food, configData)
          dispatchFoods({type: ACTIONS.ADD_FOOD, payload: res.data})
          setSnackMessage(MESSAGE.ADD_FOOD)
     }catch(err){
@@ -137,7 +137,7 @@ const addFood = async (food) =>{
 }
 const deleteFood = async (id) =>{
     try {
-        await axios.delete(`http://localhost:5000/api/v1/foods/${id}`, config)
+        await axios.delete(`/api/v1/foods/${id}`, config)
         dispatchFoods({type:ACTIONS.DELETE_FOOD, payload: id})
         setSnackMessage(MESSAGE.DELETE_FOOD)
     }catch(err){
@@ -146,7 +146,7 @@ const deleteFood = async (id) =>{
 }
 const editFood = async (id, index, food) => {
     try{
-        await axios.patch(`http://localhost:5000/api/v1/foods/${id}`, food, configData)
+        await axios.patch(`/api/v1/foods/${id}`, food, configData)
         dispatchFoods({type:ACTIONS.EDIT_FOOD, payload:{index, food}})
         setSnackMessage(MESSAGE.EDIT_FOOD)
     }catch(err){
