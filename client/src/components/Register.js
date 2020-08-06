@@ -1,8 +1,8 @@
-import React , {useState, useContext} from 'react'
+import React , { useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom';
-import {AppContext} from '../context/AppContext'
+import { AppContext } from '../context/AppContext'
 import axios from 'axios';
-import {TextField, Button, Paper, makeStyles, Typography, Snackbar} from '@material-ui/core'
+import { TextField, Button, Paper, makeStyles, Typography, Snackbar } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +26,7 @@ function Register() {
     const [checkPassword, setCheckPassword] = useState('');
     const [error, setError] = useState(undefined);
 
-    const { setUserData } = useContext(AppContext);
+    const { userData, setUserData, setSnackMessage } = useContext(AppContext);
     const history = useHistory();
 
     const submit = async (e) =>{
@@ -38,7 +38,7 @@ function Register() {
                 email, 
                 password
             });
-            setUserData({
+            setUserData({...userData,
                 token: loginRes.data.token,
                 user: loginRes.data.user
             });
@@ -48,8 +48,9 @@ function Register() {
             setPassword('');
             setCheckPassword('');
             history.push('/blogs')
+            setSnackMessage('Account created!')
         }catch(err){
-            err.response.data.msg && setError(err.response.data.msg)
+            err.response && setError(err.response.data.msg)
         }
     }
     return (

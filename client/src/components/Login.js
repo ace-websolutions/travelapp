@@ -1,8 +1,8 @@
 import React , {useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom';
-import {AppContext} from '../context/AppContext'
+import { AppContext } from '../context/AppContext'
 import axios from 'axios';
-import {TextField, Button, Paper, makeStyles, Typography, Snackbar} from '@material-ui/core'
+import { TextField, Button, Paper, makeStyles, Typography, Snackbar } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +26,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(undefined);
 
-    const { userData,setUserData, setSnack, setSnackMessage } = useContext(AppContext);
+    const { userData,setUserData, setSnackMessage } = useContext(AppContext);
     const history = useHistory();
 
     const submit = async (e) =>{
@@ -39,10 +39,9 @@ function Login() {
             setEmail('');
             setPassword('');
             history.push('/blogs')
-            setSnackMessage(!userData.user ? '' : `Welcome ${userData.user.firstName}`)
-            setSnack(true)
+            setSnackMessage('Welcome back!')
         }catch(err){
-            err.response.data.msg && setError(err.response.data.msg)
+            err.response && setError(err.response.data.msg)
         }
     }
     return (

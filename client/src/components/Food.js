@@ -1,9 +1,9 @@
-import React, {useContext, useState, useEffect} from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import {AppContext} from '../context/AppContext'
 import { PAGES } from '../context/AppReducer'
 import {makeStyles, GridList, GridListTile, GridListTileBar, Fab, Container,
-    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Button, Backdrop, ButtonGroup,
-      Menu, MenuItem, ListItemIcon,  } from '@material-ui/core'
+    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, 
+    Button, Backdrop, ButtonGroup, Menu, MenuItem, ListItemIcon,  } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
@@ -91,7 +91,6 @@ function Food() {
         }else{
             await addFood(newFood)
         }
-        // add progress while adding
         setNewFood(emptyFood);
         setEditing(false);
         setFoodIndex(0);
@@ -108,89 +107,89 @@ function Food() {
         setPrompt(true);
         setPromptTitle(title);
         setPromptId(id);
-      };
-    
-      const handlePromptClose = () => {
+    };
+
+    const handlePromptClose = () => {
         setPrompt(false);
         setPromptTitle('');
         setPromptId('');
-      };
+    };
+
     return (
         <Container>
-        <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
-        <GridList cellHeight={180} className={classes.root}>
-            {foods.foods.map((food) => (
-                <GridListTile key={food._id}>
-                    <img src={food.image}  alt="random food"/>
-                    <GridListTileBar title={food.name} subtitle={food.place} actionIcon={
-                        edit ? (
-                            <ButtonGroup className={classes.buttons}>
-                            <Button color='primary' variant="contained" onClick={() => setupEditFood(food, foods.foods.indexOf(food))}>
-                                Edit
-                            </Button>
-                            <Button color='secondary' variant="contained" onClick={() => handlePromptShow(food.name, food._id)}>
-                                Delete
-                            </Button>
-                        </ButtonGroup>
-                        ) : null
-                    }/>
-            </GridListTile>
-            ))}
-        </GridList>
-        <Fab className={classes.fab} onClick={(event) => {
-                setOpenMenu(true)
-                setAnchorEl(event.currentTarget)
-            }} color="secondary" aria-label="add">
-        <MoreHorizIcon />
-      </Fab>
-      <Menu open={openMenu} onClose={() => setOpenMenu(false)} anchorEl={anchorEl}>
-      <MenuItem onClick={edit ? closeEdit : openEditFood}>
-              <ListItemIcon>
-                  <EditIcon />
-              </ListItemIcon>
-        {edit ? 'Close Edit': 'Edit'}
-          </MenuItem>
-          <MenuItem onClick={openNewFood}>
-              <ListItemIcon>
-                  <AddIcon />
-              </ListItemIcon>
-          Add
-          </MenuItem>
-      </Menu>
-                  <Dialog open={add} onClose={closeNewFood}>
-         <DialogTitle id="form-dialog-title">Add a New Food</DialogTitle>
-         <DialogContent>
-             <TextField className={classes.textField} variant="outlined" label="Image" type='text' value={newFood.image} onChange={handleImage} fullWidth/>
-             <TextField className={classes.textField} variant="outlined" label="Name" type='name:' value={newFood.name} onChange={handleName} InputLabelProps={{
-      shrink: true,
-    }}/>
-             <TextField className={classes.textField} variant="outlined" label="Restaurant" type='text' value={newFood.place} onChange={handleFood}/>
-         </DialogContent>
-         <DialogActions>
-             <Button variant='contained' onClick={closeNewFood}>Close</Button>
-             <Button variant='contained' color="secondary"onClick={submitFood}>{editing ? 'Save' : 'Add'}</Button>
-         </DialogActions>
-     </Dialog>
-     <Dialog open={prompt} onClose={handlePromptClose}>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {`Are you sure you want to delete
-              ${promptTitle}?`}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button variant="outlined" onClick={handlePromptClose}>No</Button>
-              <Button color="primary" variant="outlined" onClick={() => {
-                  deleteFood(promptId)
-                  handlePromptClose();
-                  setEdit(false)
-                }}>
-                Yes
-              </Button>
-            </DialogActions>
-          </Dialog>
-
-                  </Container>
+            <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
+            <GridList cellHeight={180} className={classes.root}>
+                {foods.foods.map((food) => (
+                    <GridListTile key={food._id}>
+                        <img src={food.image}  alt="random food"/>
+                        <GridListTileBar title={food.name} subtitle={food.place} actionIcon={
+                            edit ? (
+                                <ButtonGroup className={classes.buttons}>
+                                <Button color='primary' variant="contained" onClick={() => setupEditFood(food, foods.foods.indexOf(food))}>
+                                    Edit
+                                </Button>
+                                <Button color='secondary' variant="contained" onClick={() => handlePromptShow(food.name, food._id)}>
+                                    Delete
+                                </Button>
+                            </ButtonGroup>
+                            ) : null
+                        }/>
+                </GridListTile>
+                ))}
+            </GridList>
+            <Fab className={classes.fab} onClick={(event) => {
+                    setOpenMenu(true)
+                    setAnchorEl(event.currentTarget)
+                }} color="secondary" aria-label="add">
+                <MoreHorizIcon />
+            </Fab>
+            <Menu open={openMenu} onClose={() => setOpenMenu(false)} anchorEl={anchorEl}>
+            <MenuItem onClick={edit ? closeEdit : openEditFood}>
+                    <ListItemIcon>
+                        <EditIcon />
+                    </ListItemIcon>
+                {edit ? 'Close Edit': 'Edit'}
+                </MenuItem>
+                <MenuItem onClick={openNewFood}>
+                    <ListItemIcon>
+                        <AddIcon />
+                    </ListItemIcon>
+                Add
+                </MenuItem>
+            </Menu>
+            <Dialog open={add} onClose={closeNewFood}>
+                <DialogTitle id="form-dialog-title">Add a New Food</DialogTitle>
+                <DialogContent>
+                    <TextField className={classes.textField} variant="outlined" label="Image" type='text' value={newFood.image} onChange={handleImage} fullWidth/>
+                    <TextField className={classes.textField} variant="outlined" label="Name" type='name:' value={newFood.name} onChange={handleName} InputLabelProps={{
+                    shrink: true,
+                    }}/>
+                    <TextField className={classes.textField} variant="outlined" label="Restaurant" type='text' value={newFood.place} onChange={handleFood}/>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant='contained' onClick={closeNewFood}>Close</Button>
+                    <Button variant='contained' color="secondary"onClick={submitFood}>{editing ? 'Save' : 'Add'}</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={prompt} onClose={handlePromptClose}>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {`Are you sure you want to delete
+                    ${promptTitle}?`}
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button variant="outlined" onClick={handlePromptClose}>No</Button>
+                    <Button color="primary" variant="outlined" onClick={() => {
+                        deleteFood(promptId)
+                        handlePromptClose();
+                        setEdit(false)
+                        }}>
+                        Yes
+                    </Button>
+                    </DialogActions>
+            </Dialog>
+        </Container>
     )
 }
 

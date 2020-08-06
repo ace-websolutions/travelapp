@@ -84,14 +84,6 @@ export const FoodReducer = (foods, action) => {
             return foods;
     }
 }
-export const UserReducer = (user, action) => {
-    switch (action.type) {
-        case ACTIONS.EDIT_USER:
-            return {...user, user:action.payload}
-        default:
-            return user;
-    }
-}
 
 export const INITIAL_BLOGS = {
     blogs: [],

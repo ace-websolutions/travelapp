@@ -1,9 +1,11 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import axios from 'axios'
-import {useHistory} from 'react-router-dom'
-import {AppContext} from '../context/AppContext'
-import {PAGES, ACTIONS, MESSAGE} from '../context/AppReducer'
-import {AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem,ListItemIcon, ListItemText, makeStyles, Switch, Dialog, DialogTitle, Divider, MenuItem, Select, ButtonGroup, Button, Snackbar} from '@material-ui/core'
+import { useHistory } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
+import { PAGES, ACTIONS, MESSAGE } from '../context/AppReducer'
+import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, 
+    ListItemIcon, ListItemText, makeStyles, Switch, Dialog, DialogTitle, Divider, 
+    MenuItem, Select, ButtonGroup, Button, Snackbar } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert';
 import MenuIcon from '@material-ui/icons/Menu';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
@@ -119,14 +121,13 @@ const useStyles = makeStyles((theme) => ({
     },
     menu:{
         overflow:'hidden',
-        // minHeight: 300
     },
     settings:{
         marginTop:'auto'
     }
 }))
 
-function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
+function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [openSettings, setOpenSettings] = useState(false);
@@ -227,9 +228,10 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
     }
     return (
         <AppBar position='static'>
-                    <Snackbar open={snackMessage !== undefined} anchorOrigin={{vertical:'top', horizontal:'center'}} 
-            variant="filled" autoHideDuration={3000} onClose={() => setSnackMessage(undefined)}>
-                <Alert severity="success">{snackMessage}</Alert></Snackbar>
+            <Snackbar open={snackMessage !== undefined} anchorOrigin={{vertical:'top', horizontal:'center'}} 
+                variant="filled" autoHideDuration={3000} onClose={() => setSnackMessage(undefined)}>
+                    <Alert severity="success">{snackMessage}</Alert>
+            </Snackbar>
             <Toolbar className={classes.toolBar}>
                 {!userData.user ? '' : (<><IconButton className={classes.menuIcon} onClick={() => setOpen(true)}>
                     <MenuIcon />
@@ -262,11 +264,9 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
                         </ListItem>
                     </List>
                 </Drawer></>)}
-    <Typography variant='h4' className={classes.title}>{!userData.user ? 'Travel App' : `${userData.user.firstName}'s Travels`}</Typography>
-            
-                    {!userData.user ? (<ButtonGroup><Button onClick={register}>Register</Button>
-                    <Button onClick={login}>Login</Button></ButtonGroup>) : (<Button variant='outlined' onClick={logout}>Log out</Button>)}
-    
+             <Typography variant='h4' className={classes.title}>{!userData.user ? 'Travel App' : `${userData.user.firstName}'s Travels`}</Typography>
+                {!userData.user ? (<ButtonGroup><Button onClick={register}>Register</Button>
+                <Button onClick={login}>Login</Button></ButtonGroup>) : (<Button variant='outlined' onClick={logout}>Log out</Button>)}
                 <Dialog className={classes.menu} open={openSettings} onClose={closeSettingsMenu} fullWidth maxWidth='sm'>
                     <DialogTitle>Settings</DialogTitle>
                     <Divider />
@@ -303,7 +303,6 @@ function Nav({dark, setDark, primary, setPrimary, secondary, setSecondary}) {
                 </Dialog>
             </Toolbar>
         </AppBar>
-
     )
 }
 export default Nav

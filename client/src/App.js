@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {BrowserRouter as Router} from 'react-router-dom'
+import React, { useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom'
 import AppProvider from './context/AppContext'
 import Nav from './components/Nav'
 import Body from './components/Body'
 import Footer from './components/Footer'
-import {Grid, Paper } from '@material-ui/core'
-import { createMuiTheme, ThemeProvider, makeStyles} from '@material-ui/core/styles';
+import { Grid, Paper } from '@material-ui/core'
+import { createMuiTheme, ThemeProvider, makeStyles } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 import pink from '@material-ui/core/colors/pink';
 
@@ -40,7 +40,6 @@ function App() {
   }))
   const classes = useStyles();
   
-  // add snackbar to successful login / registration as well as bad form submission err
   return (
     <Router>
       <AppProvider>

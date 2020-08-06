@@ -1,9 +1,9 @@
-import React, {useContext, useState, useEffect} from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { AppContext } from '../context/AppContext'
 import { PAGES } from '../context/AppReducer'
 import { Grid, Card, CardHeader, CardContent, CardActions, Button, Fab, makeStyles,
-Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Backdrop,
-Menu, MenuItem, ListItemIcon  } from '@material-ui/core'
+    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, 
+    Backdrop, Menu, MenuItem, ListItemIcon } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
@@ -135,59 +135,59 @@ function Blogs() {
                  </Grid>
                ))}           
             </Grid>
-     <Fab className={classes.fab} onClick={(event) => {
+            <Fab className={classes.fab} onClick={(event) => {
                 setOpenMenu(true)
                 setAnchorEl(event.currentTarget)
             }} color="secondary" aria-label="add">
-        <MoreHorizIcon />
-      </Fab>
-      <Menu open={openMenu} onClose={() => setOpenMenu(false)} anchorEl={anchorEl}>
-          <MenuItem onClick={edit ? closeEdit : openEditBlog}>
-              <ListItemIcon>
-                  <EditIcon />
-              </ListItemIcon>
-        {edit ? 'Close Edit': 'Edit'}
-          </MenuItem>
-          <MenuItem onClick={openNewBlog}>
-              <ListItemIcon>
-                  <AddIcon />
-              </ListItemIcon>
-          Add
-          </MenuItem>
-      </Menu>
-     <Dialog open={add} onClose={closeNewBlog}>
-         <DialogTitle id="form-dialog-title">Add a New Blog</DialogTitle>
-         <DialogContent>
-             <TextField className={classes.textField} variant="outlined" label="Title" type='text' value={newBlog.title} onChange={handleTitle}/>
-             <TextField className={classes.textField} variant="outlined" label="Date" type="date" value={newBlog.date} onChange={handleDate} InputLabelProps={{
-              shrink: true,
-            }}/>
-             <TextField className={classes.textField} variant="outlined" label="Description" type='text' value={newBlog.description} onChange={handleDescription} multiline fullWidth/>
-         </DialogContent>
-         <DialogActions>
-             <Button variant='contained' onClick={closeNewBlog}>Close</Button>
-             <Button variant='contained' color="secondary"onClick={submitBlog}>{editing ? 'Save' : 'Add'}</Button>
-         </DialogActions>
-     </Dialog>
-     <Dialog open={prompt} onClose={handlePromptClose}>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {`Are you sure you want to delete
-              ${promptTitle}?`}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button variant="outlined" onClick={handlePromptClose}>No</Button>
-              <Button color="primary" variant="outlined" onClick={() => {
-                  deleteBlog(promptId)
-                  handlePromptClose();
-                  setEdit(false)
-                }}>
-                Yes
-              </Button>
-            </DialogActions>
-          </Dialog>
-                </>
+                <MoreHorizIcon />
+            </Fab>
+            <Menu open={openMenu} onClose={() => setOpenMenu(false)} anchorEl={anchorEl}>
+                <MenuItem onClick={edit ? closeEdit : openEditBlog}>
+                    <ListItemIcon>
+                        <EditIcon />
+                    </ListItemIcon>
+                    {edit ? 'Close Edit': 'Edit'}
+                </MenuItem>
+                <MenuItem onClick={openNewBlog}>
+                    <ListItemIcon>
+                        <AddIcon />
+                    </ListItemIcon>
+                    Add
+                </MenuItem>
+            </Menu>
+            <Dialog open={add} onClose={closeNewBlog}>
+                <DialogTitle id="form-dialog-title">Add a New Blog</DialogTitle>
+                <DialogContent>
+                    <TextField className={classes.textField} variant="outlined" label="Title" type='text' value={newBlog.title} onChange={handleTitle}/>
+                    <TextField className={classes.textField} variant="outlined" label="Date" type="date" value={newBlog.date} onChange={handleDate} InputLabelProps={{
+                    shrink: true,
+                    }}/>
+                    <TextField className={classes.textField} variant="outlined" label="Description" type='text' value={newBlog.description} onChange={handleDescription} multiline fullWidth/>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant='contained' onClick={closeNewBlog}>Close</Button>
+                    <Button variant='contained' color="secondary"onClick={submitBlog}>{editing ? 'Save' : 'Add'}</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={prompt} onClose={handlePromptClose}>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {`Are you sure you want to delete
+                ${promptTitle}?`}
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button variant="outlined" onClick={handlePromptClose}>No</Button>
+                <Button color="primary" variant="outlined" onClick={() => {
+                    deleteBlog(promptId)
+                    handlePromptClose();
+                    setEdit(false)
+                    }}>
+                    Yes
+                </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     )
 }
 

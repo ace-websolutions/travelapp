@@ -1,5 +1,6 @@
 import React, {createContext, useReducer, useState } from 'react'
-import {BlogReducer, PlaceReducer, FoodReducer,INITIAL_BLOGS, INITIAL_PLACES, PAGES, INITIAL_FOODS, ACTIONS, MESSAGE} from './AppReducer'
+import { BlogReducer, PlaceReducer, FoodReducer,INITIAL_BLOGS, INITIAL_PLACES, 
+    PAGES, INITIAL_FOODS, ACTIONS, MESSAGE } from './AppReducer'
 import axios from 'axios'
 
 export const AppContext = createContext();
@@ -8,13 +9,11 @@ function AppProvider({ children }) {
    const [blogs, dispatchBlogs] = useReducer(BlogReducer, INITIAL_BLOGS)
    const [places, dispatchPlaces] = useReducer(PlaceReducer, INITIAL_PLACES)
    const [foods, dispatchFoods] = useReducer(FoodReducer, INITIAL_FOODS)
-   const [page, setPage] = useState(PAGES.LOGIN)
-   const [homePage, setHomePage] = useState(PAGES.BLOG)
+//    const [page, setPage] = useState(PAGES.LOGIN)
+//    const [homePage, setHomePage] = useState(PAGES.BLOG)
    const [loading, setLoading] = useState(false)
    const [snackMessage, setSnackMessage] = useState(undefined)
    const [userData, setUserData] = useState({token: undefined, user: undefined})
-
-   //ADD user preferences to db and load - i.e colors & theme
 
     const config = {
         headers: {
@@ -71,7 +70,7 @@ function AppProvider({ children }) {
            dispatchBlogs({type:ACTIONS.DELETE_BLOG, payload: id})
            setSnackMessage(MESSAGE.DELETE_BLOG)
        }catch(err){
-        console.log(err);
+            console.log(err);
     }
    }
    const editBlog = async (id, index, blog) => {
@@ -80,7 +79,7 @@ function AppProvider({ children }) {
            dispatchBlogs({type:ACTIONS.EDIT_BLOG, payload:{index, blog}})
            setSnackMessage(MESSAGE.EDIT_BLOG)
         }catch(err){
-        console.log(err);
+            console.log(err);
     }
    }
    const getPlaces = async () => {
@@ -106,7 +105,7 @@ function AppProvider({ children }) {
            dispatchPlaces({type:ACTIONS.DELETE_PLACE, payload: id})
            setSnackMessage(MESSAGE.DELETE_PLACE)
        }catch(err){
-        console.log(err);
+            console.log(err);
     }
    }
    const editPlace = async (id, index, place) => {
@@ -115,7 +114,7 @@ function AppProvider({ children }) {
            dispatchPlaces({type:ACTIONS.EDIT_PLACE, payload:{index, place}})
            setSnackMessage(MESSAGE.EDIT_PLACE)
        }catch(err){
-        console.log(err);
+            console.log(err);
     }
    }
 
@@ -142,7 +141,7 @@ const deleteFood = async (id) =>{
         dispatchFoods({type:ACTIONS.DELETE_FOOD, payload: id})
         setSnackMessage(MESSAGE.DELETE_FOOD)
     }catch(err){
-     console.log(err);
+        console.log(err);
  }
 }
 const editFood = async (id, index, food) => {
@@ -151,17 +150,20 @@ const editFood = async (id, index, food) => {
         dispatchFoods({type:ACTIONS.EDIT_FOOD, payload:{index, food}})
         setSnackMessage(MESSAGE.EDIT_FOOD)
     }catch(err){
-     console.log(err);
+        console.log(err);
  }
 }
 
     return (
-        <AppContext.Provider value={{blogs, dispatchBlogs, places, dispatchPlaces, 
-        foods, dispatchFoods, loading, setLoading,
-        getBlogs, addBlog, deleteBlog, editBlog,
-        getPlaces, addPlace, deletePlace, editPlace,
-        getFoods, addFood, deleteFood, editFood, snackMessage, setSnackMessage,
-        homePage, setHomePage, userData, setUserData, page, setPage, checkLoggedIn, configData}}> 
+        <AppContext.Provider value={{
+            blogs, dispatchBlogs, places, dispatchPlaces, 
+            foods, dispatchFoods, loading, setLoading,
+            getBlogs, addBlog, deleteBlog, editBlog,
+            getPlaces, addPlace, deletePlace, editPlace,
+            getFoods, addFood, deleteFood, editFood, snackMessage, 
+            setSnackMessage, userData, setUserData, checkLoggedIn, 
+            configData
+            }}> 
             {children}
         </AppContext.Provider>
     )

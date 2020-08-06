@@ -1,8 +1,9 @@
-import React, {useContext, useState, useEffect} from 'react'
-import {AppContext} from '../context/AppContext'
+import React, { useContext, useState, useEffect } from 'react'
+import { AppContext } from '../context/AppContext'
 import { PAGES } from '../context/AppReducer'
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Slider, makeStyles, Fab,
-    Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, Button, Backdrop, Menu, MenuItem, ListItemIcon  } from '@material-ui/core'
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, 
+    Paper, Slider, makeStyles, Fab, Dialog, DialogTitle, DialogContent, TextField, 
+    DialogActions, DialogContentText, Button, Backdrop, Menu, MenuItem, ListItemIcon } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
@@ -44,7 +45,7 @@ const emptyPlace = {
 }
 function Places() {
     const classes = useStyles();
-    const {places, loading, setSnack, editPlace, deletePlace, addPlace, checkLoggedIn} = useContext(AppContext);
+    const { places, loading, editPlace, deletePlace, addPlace, checkLoggedIn } = useContext(AppContext);
     const [add, setAdd] = useState(false);
     const [edit, setEdit] = useState(false);
     const [prompt, setPrompt] = useState(false);
@@ -104,7 +105,6 @@ function Places() {
         setEditing(false);
         setPlaceIndex(0);
         setAdd(false);
-        setSnack(true)
     }
     const setupEditPlace = (place, index) => {
         setAdd(true);
@@ -116,100 +116,99 @@ function Places() {
         setPrompt(true);
         setPromptTitle(title);
         setPromptId(id);
-      };
+    };
     
       const handlePromptClose = () => {
         setPrompt(false);
         setPromptTitle('');
         setPromptId('');
-      };
+    };
 
     return (
         <>
-        <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
-        <TableContainer component={Paper}>
-            <Table size='small'>
-                <TableHead>
-                    <TableRow className={classes.topRow}>
-                        <TableCell>Location</TableCell>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Time Spent</TableCell>
-                        <TableCell>Rating</TableCell>
-                        {edit ? (<TableCell className={classes.editLabel}>Edit</TableCell>) : null}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {places.places.map(place => (
-                        <>
-                        <TableRow key={place._id}>
-                            <TableCell>{place.location}</TableCell>
-                            <TableCell>{place.date}</TableCell>
-                            <TableCell>{place.timeSpent}</TableCell>
-                            <TableCell><Slider value={place.rating}   valueLabelDisplay="auto"
-                            /></TableCell>
-                            {edit ? (<TableCell className={classes.editButtons}><Button className={classes.editButton} color='primary' variant="outlined" onClick={() => setupEditPlace(place, places.places.indexOf(place))}>Edit</Button>
-                            <Button color='secondary' variant="outlined" onClick={() => handlePromptShow(place.location, place._id)}>Delete</Button></TableCell>) : null}
+            <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
+            <TableContainer component={Paper}>
+                <Table size='small'>
+                    <TableHead>
+                        <TableRow className={classes.topRow}>
+                            <TableCell>Location</TableCell>
+                            <TableCell>Date</TableCell>
+                            <TableCell>Time Spent</TableCell>
+                            <TableCell>Rating</TableCell>
+                            {edit ? (<TableCell className={classes.editLabel}>Edit</TableCell>) : null}
                         </TableRow>
-                        </>
-                    ))}
+                    </TableHead>
+                    <TableBody>
+                        {places.places.map(place => (
+                            <>
+                            <TableRow key={place._id}>
+                                <TableCell>{place.location}</TableCell>
+                                <TableCell>{place.date}</TableCell>
+                                <TableCell>{place.timeSpent}</TableCell>
+                                <TableCell><Slider value={place.rating}   valueLabelDisplay="auto"
+                                /></TableCell>
+                                {edit ? (<TableCell className={classes.editButtons}><Button className={classes.editButton} color='primary' variant="outlined" onClick={() => setupEditPlace(place, places.places.indexOf(place))}>Edit</Button>
+                                <Button color='secondary' variant="outlined" onClick={() => handlePromptShow(place.location, place._id)}>Delete</Button></TableCell>) : null}
+                            </TableRow>
+                            </>
+                        ))}
 
-                </TableBody>
-            </Table>
-            <Fab className={classes.fab} onClick={(event) => {
-                setOpenMenu(true)
-                setAnchorEl(event.currentTarget)
-            }} color="secondary" aria-label="add">
-        <MoreHorizIcon />
-      </Fab>
-      <Menu open={openMenu} onClose={() => setOpenMenu(false)} anchorEl={anchorEl}>
-      <MenuItem onClick={edit ? closeEdit : openEditPlace}>
-              <ListItemIcon>
-                  <EditIcon />
-              </ListItemIcon>
-        {edit ? 'Close Edit': 'Edit'}
-          </MenuItem>
-          <MenuItem onClick={openNewPlace}>
-              <ListItemIcon>
-                  <AddIcon />
-              </ListItemIcon>
-          Add
-          </MenuItem>
-      </Menu>
-        </TableContainer>
-        <Dialog open={add} onClose={closeNewPlace}>
-         <DialogTitle id="form-dialog-title">Add a New Blog</DialogTitle>
-         <DialogContent>
-             <TextField className={classes.textField} variant="outlined" label="Location" type='text' value={newPlace.location} onChange={handleLocation}/>
-             <TextField className={classes.textField} variant="outlined" label="Date" type='date' value={newPlace.date} onChange={handleDate} InputLabelProps={{
-      shrink: true,
-    }}/>
-             <TextField className={classes.textField} variant="outlined" label="Time Spent" type='text' value={newPlace.timeSpent} onChange={handleTimeSpent} />
-                    <Slider  onChange={handleRating} valueLabelDisplay="auto" />
-         </DialogContent>
-         <DialogActions>
-             <Button variant='contained' onClick={closeNewPlace}>Close</Button>
-             <Button variant='contained' color="secondary" onClick={submitPlace}>{editing ? 'Save' : 'Add'}</Button>
-         </DialogActions>
-     </Dialog>
-     <Dialog open={prompt} onClose={handlePromptClose}>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {`Are you sure you want to delete
-              ${promptTitle}?`}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button variant="outlined" onClick={handlePromptClose}>No</Button>
-              <Button color="primary" variant="outlined" onClick={() => {
-                  deletePlace(promptId)
-                  handlePromptClose();
-                  setEdit(false)
-                }}>
-                Yes
-              </Button>
-            </DialogActions>
-          </Dialog>
-
+                    </TableBody>
+                </Table>
+                <Fab className={classes.fab} onClick={(event) => {
+                    setOpenMenu(true)
+                    setAnchorEl(event.currentTarget)
+                }} color="secondary" aria-label="add">
+                    <MoreHorizIcon />
+                </Fab>
+                <Menu open={openMenu} onClose={() => setOpenMenu(false)} anchorEl={anchorEl}>
+                    <MenuItem onClick={edit ? closeEdit : openEditPlace}>
+                            <ListItemIcon>
+                                <EditIcon />
+                            </ListItemIcon>
+                            {edit ? 'Close Edit': 'Edit'}
+                        </MenuItem>
+                        <MenuItem onClick={openNewPlace}>
+                            <ListItemIcon>
+                                <AddIcon />
+                            </ListItemIcon>
+                                Add
+                        </MenuItem>
+                </Menu>
+            </TableContainer>
+            <Dialog open={add} onClose={closeNewPlace}>
+                <DialogTitle id="form-dialog-title">Add a New Blog</DialogTitle>
+                <DialogContent>
+                    <TextField className={classes.textField} variant="outlined" label="Location" type='text' value={newPlace.location} onChange={handleLocation}/>
+                    <TextField className={classes.textField} variant="outlined" label="Date" type='date' value={newPlace.date} onChange={handleDate} InputLabelProps={{
+                        shrink: true,
+                        }}/>
+                    <TextField className={classes.textField} variant="outlined" label="Time Spent" type='text' value={newPlace.timeSpent} onChange={handleTimeSpent} />
+                        <Slider  onChange={handleRating} valueLabelDisplay="auto" />
+                </DialogContent>
+                <DialogActions>
+                    <Button variant='contained' onClick={closeNewPlace}>Close</Button>
+                    <Button variant='contained' color="secondary" onClick={submitPlace}>{editing ? 'Save' : 'Add'}</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={prompt} onClose={handlePromptClose}>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {`Are you sure you want to delete
+                ${promptTitle}?`}
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button variant="outlined" onClick={handlePromptClose}>No</Button>
+                <Button color="primary" variant="outlined" onClick={() => {
+                    deletePlace(promptId)
+                    handlePromptClose();
+                    setEdit(false)
+                    }}>
+                    Yes
+                </Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }
