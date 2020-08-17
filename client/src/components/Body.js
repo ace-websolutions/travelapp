@@ -1,6 +1,7 @@
 import React, { /* useContext */ } from 'react'
 import {Route, Switch} from 'react-router-dom'
 // import { AppContext } from '../context/AppContext'
+import Landing from './Landing'
 import Register from './Register'
 import Login from './Login'
 import Blogs from './Blogs'
@@ -12,6 +13,7 @@ function Body() {
 
     return(
         <Switch>
+            <Route exact path="/" component={Landing} />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <Route path="/blogs" component={Blogs} />

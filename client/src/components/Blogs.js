@@ -29,9 +29,18 @@ const useStyles = makeStyles((theme) => ({
         right: theme.spacing(2),
       },
     backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     },
+    center: {
+        display:'flex',
+        justifyContent: "center",
+        alignItems: 'center'
+    },
+    body:{
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+    },  
 }))
 const emptyBlog = {
     title:"",
@@ -116,7 +125,9 @@ function Blogs() {
         setPromptId('');
       };
     return (
-        <>
+        <Grid container className={classes.body}>
+        <Grid item xs={1} sm={2} />
+        <Grid container item xs={10} sm={8} className={classes.center}>
             <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
             <Grid container direction='column-reverse' spacing={2} className={classes.bottom}>
                 {blogs.blogs.map(blog => (
@@ -187,7 +198,9 @@ function Blogs() {
                 </Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </Grid>
+      <Grid item xs={1} sm={2} />
+      </Grid>
     )
 }
 

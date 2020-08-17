@@ -7,7 +7,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 const useStyles = makeStyles((theme) => ({
     bottom:{
         top: 'auto',
-        bottom:0
+        bottom:0,
     },
     actions:{
         display: 'flex',

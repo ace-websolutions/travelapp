@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { AppContext } from '../context/AppContext'
 import { PAGES } from '../context/AppReducer'
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, 
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Grid, 
     Paper, Slider, makeStyles, Fab, Dialog, DialogTitle, DialogContent, TextField, 
     DialogActions, DialogContentText, Button, Backdrop, Menu, MenuItem, ListItemIcon } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
@@ -32,10 +32,19 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(10),
         right: theme.spacing(2),
       },
-      backdrop: {
+    backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
-      },
+    },
+    center: {
+        display:'flex',
+        justifyContent: "center",
+        alignItems: 'center'
+    },
+    body:{
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+      },  
 }))
 const emptyPlace = {
     location:"",
@@ -125,7 +134,9 @@ function Places() {
     };
 
     return (
-        <>
+        <Grid container className={classes.body}>
+        <Grid item xs={1} sm={2} />
+        <Grid container item xs={10} sm={8} className={classes.center}>
             <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
             <TableContainer component={Paper}>
                 <Table size='small'>
@@ -209,7 +220,9 @@ function Places() {
                 </Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </Grid>
+      <Grid item xs={1} sm={2} />
+      </Grid>
     )
 }
 

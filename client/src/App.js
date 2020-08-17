@@ -25,18 +25,10 @@ function App() {
     paper:{
       minHeight: '100vh',
       height:'100%',
-      backgroundColor: dark ? themeCustom.palette.background.default:'#e3e3e3',
-      
-    },
-    body:{
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(3),
-    },
-    center: {
+      backgroundColor: '#f6f6f6',
       display:'flex',
-      justifyContent: "center",
-      alignItems: 'center'
-    }
+      flexDirection: 'column',
+    },
   }))
   const classes = useStyles();
   
@@ -46,13 +38,7 @@ function App() {
         <ThemeProvider theme={themeCustom}>
           <Paper className={classes.paper}>
             <Nav dark={dark} setDark={setDark} primary={primary} setPrimary={setPrimary} secondary={secondary} setSecondary={setSecondary}/>
-              <Grid container className={classes.body}>
-                <Grid item xs={1} sm={2} />
-                    <Grid container item xs={10} sm={8} className={classes.center}>
-                      <Body />
-                    </Grid>
-                  <Grid item xs={1} sm={2} />
-              </Grid>
+                <Body />
             <Footer />
           </Paper>
         </ThemeProvider>

@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {AppContext} from '../context/AppContext'
 import { PAGES } from '../context/AppReducer'
-import {makeStyles, GridList, GridListTile, GridListTileBar, Fab, Container,
+import {makeStyles, GridList, GridListTile, GridListTileBar, Fab,
     Dialog, DialogTitle, DialogContent, TextField, DialogActions, DialogContentText, 
-    Button, Backdrop, ButtonGroup, Menu, MenuItem, ListItemIcon,  } from '@material-ui/core'
+    Button, Backdrop, ButtonGroup, Menu, MenuItem, ListItemIcon, Grid } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
@@ -28,10 +28,19 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(10),
         right: theme.spacing(2),
       },
-      backdrop: {
+    backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
-      },
+    },
+    center: {
+        display:'flex',
+        justifyContent: "center",
+        alignItems: 'center'
+    },
+    body:{
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+      },  
 }))
 const emptyFood = {
     image:"https://source.unsplash.com/400x300/?food",
@@ -116,7 +125,9 @@ function Food() {
     };
 
     return (
-        <Container>
+        <Grid container className={classes.body}>
+        <Grid item xs={1} sm={2} />
+        <Grid container item xs={10} sm={8} className={classes.center}>
             <Backdrop className={classes.backdrop} open={loading}> <CircularProgress /> </Backdrop>
             <GridList cellHeight={180} className={classes.root}>
                 {foods.foods.map((food) => (
@@ -189,7 +200,10 @@ function Food() {
                     </Button>
                     </DialogActions>
             </Dialog>
-        </Container>
+        </Grid>
+      <Grid item xs={1} sm={2} />
+      </Grid>
+
     )
 }
 
