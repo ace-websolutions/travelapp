@@ -4,13 +4,13 @@ import AppProvider from './context/AppContext'
 import Nav from './components/Nav'
 import Body from './components/Body'
 import Footer from './components/Footer'
-import { Grid, Paper } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { createMuiTheme, ThemeProvider, makeStyles } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
+import orange from '@material-ui/core/colors/orange';
 import pink from '@material-ui/core/colors/pink';
 
 function App() {
-  const [primary, setPrimary] = useState(blue)
+  const [primary, setPrimary] = useState(orange)
   const [secondary, setSecondary] = useState(pink)
   const [dark, setDark] = useState(false)
 

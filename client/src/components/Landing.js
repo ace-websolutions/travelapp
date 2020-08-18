@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
         transform: 'translate(-50%, -50%)',
         display: 'flex',
         flexDirection: 'column',
-        padding: '2rem',
+        padding: '1.5rem',
+        maxWidth: "350px"
     },
     text: {
         margin: '3rem 0'
@@ -39,8 +40,9 @@ function Landing() {
     return (
         <Container className={classes.bkg}>
             <Paper className={classes.intro}>
-                <Typography variant='h2'>Explore</Typography>
-                <Typography variant='h6' className={classes.text}>Keep track of all your travels</Typography>
+                <Typography variant='h2'>Welcome</Typography>
+                <Typography variant='h6' className={classes.text}>Vacations can seem like a blur once you return. 
+                    Keep track of all of the things you do and places you go here, to never miss a moment.</Typography>
                 <ButtonGroup>
                     <Button variant='contained' color='primary' onClick={register}>Register</Button>
                     <Button variant='contained' color='primary' onClick={login}>Login</Button>

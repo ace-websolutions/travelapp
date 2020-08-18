@@ -207,7 +207,6 @@ function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
     }
     const changeDark = async (id) => {
         setDark(!dark)
-        console.log(!dark)
         const user = {...userData.user, theme: !dark}
         try{
             await axios.post(`/api/v1/users/${id}`, user, configData)
