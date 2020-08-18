@@ -160,7 +160,7 @@ function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
         dispatchBlogs({type: ACTIONS.GET_BLOG, payload: []});
         dispatchPlaces({type: ACTIONS.GET_PLACE, payload: []});
         dispatchFoods({type: ACTIONS.GET_FOOD, payload: []});
-        setPrimary(blue)
+        setPrimary(orange)
         setSecondary(pink)
         history.push("/login");
     }
