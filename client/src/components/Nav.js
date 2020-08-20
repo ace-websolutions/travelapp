@@ -160,6 +160,7 @@ function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
         dispatchBlogs({type: ACTIONS.GET_BLOG, payload: []});
         dispatchPlaces({type: ACTIONS.GET_PLACE, payload: []});
         dispatchFoods({type: ACTIONS.GET_FOOD, payload: []});
+        setDark(false);
         setPrimary(orange)
         setSecondary(pink)
         history.push("/login");
@@ -265,7 +266,7 @@ function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
                 </Drawer></>)}
              <Typography variant='h4' className={classes.title}>{!userData.user ? 'Travel App' : `${userData.user.firstName}'s Travels`}</Typography>
                 {!userData.user ? (<ButtonGroup><Button onClick={register}>Register</Button>
-                <Button onClick={login}>Login</Button></ButtonGroup>) : (<Button variant='outlined' onClick={logout}>Log out</Button>)}
+                <Button onClick={login}>Login</Button></ButtonGroup>) : (<Button variant='contained' onClick={logout}>Log out</Button>)}
                 <Dialog className={classes.menu} open={openSettings} onClose={closeSettingsMenu} fullWidth maxWidth='sm'>
                     <DialogTitle>Settings</DialogTitle>
                     <Divider />

@@ -25,7 +25,7 @@ function App() {
     paper:{
       minHeight: '100vh',
       height:'100%',
-      backgroundColor: '#f6f6f6',
+      backgroundColor: dark ? themeCustom.palette.background.default:'#e3e3e3',
       display:'flex',
       flexDirection: 'column',
     },
