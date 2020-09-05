@@ -12,6 +12,8 @@ import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ExploreIcon from '@material-ui/icons/Explore';
 import FreeBreakfastIcon from '@material-ui/icons/FreeBreakfast';
 import SettingsIcon from '@material-ui/icons/Settings';
+import BugReportIcon from '@material-ui/icons/BugReport';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import red from '@material-ui/core/colors/red';
 import pink from '@material-ui/core/colors/pink';
 import purple from '@material-ui/core/colors/purple';
@@ -96,38 +98,46 @@ const storeColor = (color) => {
     if(color === grey) return 'Grey'
     if(color === blueGrey) return 'Blue-Grey'
 }
-
-
-const useStyles = makeStyles((theme) => ({
-    toolBar:{
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        position:'relative'
-    },
-    title:{
-        paddingTop: theme.spacing(1),
-        color: theme.palette.text.primary
-    },
-    switch:{
-        marginLeft: 'auto'
-    },
-    list:{
-        minWidth: 225,
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        backgroundColor: theme.palette.primary.light
-    },
-    menu:{
-        overflow:'hidden',
-    },
-    settings:{
-        marginTop:'auto'
-    }
-}))
-
 function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
+    const useStyles = makeStyles((theme) => ({
+        appBar:{
+            [theme.breakpoints.up('xl')]:{
+                alignItems:'center',
+            }
+        },
+        toolBar:{
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            position:'relative',
+            [theme.breakpoints.up('xl')]:{
+                width:1260,
+            }
+        },
+        title:{
+            paddingTop: theme.spacing(1),
+            color: theme.palette.text.primary
+        },
+        switch:{
+            marginLeft: 'auto'
+        },
+        list:{
+            minWidth: 225,
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            backgroundColor: dark ?  theme.palette.primary.dark : theme.palette.primary.light
+        },
+        menu:{
+            overflow:'hidden',
+        },        
+        text: {
+            zIndex: 10,
+            color: theme.palette.text.primary,
+            textDecoration: "none",
+          },
+    }))
+    
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [openSettings, setOpenSettings] = useState(false);
@@ -137,32 +147,28 @@ function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
     const history = useHistory();
 
     useEffect(() => {
-        if(userData.user) return setPrimary(getColor(userData.user.primary))
+        updateTheme();
         // eslint-disable-next-line
-        if(userData.user) return setSecondary(getColor(userData.user.secondary))
-        // eslint-disable-next-line
-        if(userData.user) return setDark(userData.user.theme)
-        // eslint-disable-next-line
-    }, [userData])
-
-    const register = () => {
-        history.push("/register");
-    }
-    const login = () => {
-        history.push("/login");
-    }
-    const logout = () => {
+        }, [userData])
+    const updateTheme = async () => {
+        if(userData.user) {
+            setPrimary(getColor(userData.user.primary))
+            setSecondary(getColor(userData.user.secondary))
+            setDark(userData.user.theme)
+        } 
+      }    
+    const logout = async() => {
         setUserData({
             token:undefined,
             user: undefined
         })
-        localStorage.removeItem("x-auth-token")
-        dispatchBlogs({type: ACTIONS.GET_BLOG, payload: []});
-        dispatchPlaces({type: ACTIONS.GET_PLACE, payload: []});
-        dispatchFoods({type: ACTIONS.GET_FOOD, payload: []});
-        setDark(false);
-        setPrimary(orange)
-        setSecondary(pink)
+        await localStorage.removeItem("x-auth-token")
+        await dispatchBlogs({type: ACTIONS.GET_BLOG, payload: []});
+        await dispatchPlaces({type: ACTIONS.GET_PLACE, payload: []});
+        await dispatchFoods({type: ACTIONS.GET_FOOD, payload: []});
+        await setDark(false);
+        await setPrimary(orange)
+        await setSecondary(pink)
         history.push("/login");
     }
     const openBlog = () => {
@@ -227,46 +233,68 @@ function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
             return setHomePage(PAGES.FOOD)
     }
     return (
-        <AppBar position='static'>
+        <AppBar position='static' className={classes.appBar}>
             <Snackbar open={snackMessage !== undefined} anchorOrigin={{vertical:'top', horizontal:'center'}} 
                 variant="filled" autoHideDuration={3000} onClose={() => setSnackMessage(undefined)}>
                     <Alert severity="success">{snackMessage}</Alert>
             </Snackbar>
             <Toolbar className={classes.toolBar}>
-                {!userData.user ? '' : (<><IconButton className={classes.menuIcon} onClick={() => setOpen(true)}>
+                {userData.user && (<><IconButton className={classes.menuIcon} onClick={() => setOpen(true)}>
                     <MenuIcon />
                 </IconButton>
                 <Drawer anchor='left' open={open} onClose={() => setOpen(false)}>
                     <List className={classes.list}>
-                        <ListItem button onClick={openBlog}>
-                            <ListItemIcon>
-                                <LibraryBooksIcon />
-                            </ListItemIcon>
-                            <ListItemText primary='Blogs' />
+                        <List>
+                            <ListItem button onClick={openBlog}>
+                                <ListItemIcon>
+                                    <LibraryBooksIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Blogs' />
+                                </ListItem>
+                            <ListItem button onClick={openPlaces}>
+                                <ListItemIcon>
+                                        <ExploreIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Places' /> 
+                                </ListItem>
+                            <ListItem button onClick={openFood}>
+                                <ListItemIcon>
+                                        <FreeBreakfastIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='Food and Drink' />
+                                </ListItem>
+                        </List>
+                        <List>
+                        <Divider />
+                            <ListItem button onClick={openSettingsMenu}>
+                                <ListItemIcon>
+                                    <SettingsIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Settings"/>
                             </ListItem>
-                        <ListItem button onClick={openPlaces}>
-                            <ListItemIcon>
-                                    <ExploreIcon />
-                            </ListItemIcon>
-                            <ListItemText primary='Places' /> 
-                            </ListItem>
-                        <ListItem button onClick={openFood}>
-                            <ListItemIcon>
-                                    <FreeBreakfastIcon />
-                            </ListItemIcon>
-                            <ListItemText primary='Food and Drink' />
-                            </ListItem>
-                        <ListItem button onClick={openSettingsMenu} className={classes.settings}>
-                            <ListItemIcon>
-                                <SettingsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Settings"/>
-                        </ListItem>
+                            <a href="https://github.com/nick-dasto/travelapp/issues" target="_blank" 
+                                rel="noopener noreferrer" className={classes.text}>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <BugReportIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Report Bug"/>
+                                </ListItem>
+                            </a>
+                            <a href="https://github.com/nick-dasto" target="_blank" 
+                                rel="noopener noreferrer" className={classes.text}>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <GitHubIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="View More"/>
+                                </ListItem>
+                            </a>
+                        </List>
                     </List>
                 </Drawer></>)}
              <Typography variant='h4' className={classes.title}>{!userData.user ? 'Travel App' : `${userData.user.firstName}'s Travels`}</Typography>
-                {!userData.user ? (<ButtonGroup><Button onClick={register}>Register</Button>
-                <Button onClick={login}>Login</Button></ButtonGroup>) : (<Button variant='contained' onClick={logout}>Log out</Button>)}
+                {userData.user && (<Button variant='contained' onClick={logout}>Log out</Button>)}
                 <Dialog className={classes.menu} open={openSettings} onClose={closeSettingsMenu} fullWidth maxWidth='sm'>
                     <DialogTitle>Settings</DialogTitle>
                     <Divider />
@@ -291,14 +319,14 @@ function Nav({ dark, setDark, primary, setPrimary, secondary, setSecondary }) {
                                 ))}
                             </Select>
                         </ListItem>
-                        <ListItem>
+                        {/* <ListItem>
                             <ListItemText primary="Homepage" />
                             <Select value={homePage} onChange={changeHomePage}>
                                 <MenuItem value={PAGES.BLOG}>Blogs</MenuItem>
                                 <MenuItem value={PAGES.PLACES}>Places</MenuItem>
                                 <MenuItem value={PAGES.FOOD}>Food and Drink</MenuItem>
                             </Select>
-                        </ListItem>
+                        </ListItem> */}
                     </List>
                 </Dialog>
             </Toolbar>
